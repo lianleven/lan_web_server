@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LAN 文件传输</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(120deg, #e3f0ff 0%, #f5f5f5 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(33, 150, 243, 0.08), 0 1.5px 4px rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(90deg, #2196F3 60%, #21CBF3 100%);
+      color: white;
+      padding: 28px 20px 20px 20px;
+      text-align: center;
+      border-radius: 12px 12px 0 0;
+      box-shadow: 0 2px 8px rgba(33,150,243,0.08);
+    }
+    .header h1 {
+      font-size: 2.2em;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    .content {
+      padding: 28px 24px 24px 24px;
+    }
+    #breadcrumb {
+      margin-bottom: 18px;
+      font-size: 1.08em;
+      color: #1976d2;
+      user-select: none;
+    }
+    #breadcrumb span {
+      cursor: pointer;
+      color: #1976d2;
+      transition: color 0.2s;
+    }
+    #breadcrumb span.active {
+      color: #333;
+      font-weight: bold;
+      cursor: default;
+    }
+    #breadcrumb .sep {
+      color: #90caf9;
+      margin: 0 6px;
+      font-weight: bold;
+    }
+    .section {
+      margin-bottom: 24px;
+      padding: 18px;
+      border: 1px solid #e3eaf2;
+      border-radius: 8px;
+      background: #fafdff;
+      box-shadow: 0 1px 2px rgba(33,150,243,0.03);
+    }
+    .upload-area {
+      border: 2.5px dashed #2196F3;
+      padding: 48px 0;
+      text-align: center;
+      cursor: pointer;
+      border-radius: 8px;
+      background: #f0f7ff;
+      transition: border-color 0.2s, background 0.2s;
+      font-size: 1.15em;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .upload-area.dragover {
+      border-color: #21CBF3;
+      background: #e3f0ff;
+    }
+    .upload-area .icon {
+      font-size: 2.2em;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .file-list {
+      border: 1px solid #e3eaf2;
+      border-radius: 8px;
+      background: #fafdff;
+      min-height: 80px;
+      box-shadow: 0 1px 2px rgba(33,150,243,0.03);
+      padding: 0 0 8px 0;
+    }
+    ul.file-ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .file-li {
+      display: flex;
+      align-items: center;
+      padding: 12px 18px;
+      border-bottom: 1px solid #f0f0f0;
+      transition: background 0.18s;
+      position: relative;
+    }
+    .file-li:last-child { border-bottom: none; }
+    .file-li:hover {
+      background: #e3f2fd;
+    }
+    .file-icon {
+      font-size: 1.4em;
+      margin-right: 14px;
+      width: 28px;
+      text-align: center;
+      color: #2196F3;
+    }
+    .file-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .file-info strong {
+      font-size: 1.08em;
+      word-break: break-all;
+    }
+    .file-meta {
+      font-size: 12px;
+      color: #888;
+      margin-top: 2px;
+    }
+    .file-actions {
+      display: flex;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.18s;
+    }
+    .file-li:hover .file-actions {
+      opacity: 1;
+    }
+    .btn {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      color: white;
+      font-size: 1em;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: background 0.18s, box-shadow 0.18s;
+      box-shadow: 0 1px 2px rgba(33,150,243,0.04);
+    }
+    .btn-success { background: #4CAF50; }
+    .btn-danger { background: #f44336; }
+    .btn-success:hover { background: #388e3c; }
+    .btn-danger:hover { background: #c62828; }
+    .status {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 3px;
+      display: none;
+    }
+    .status.info {
+      background: #e3f2fd;
+      color: #0d47a1;
+    }
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+    }
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    @media (max-width: 600px) {
+      .container { max-width: 100%; padding: 0; border-radius: 0; }
+      .content { padding: 8px; }
+      .section { padding: 6px; margin-bottom: 12px; }
+      .header { padding: 18px 6px 12px 6px; border-radius: 0; }
+      .header h1 { font-size: 1.3em; }
+      #breadcrumb { font-size: 0.98em; margin-bottom: 10px; overflow-x: auto; white-space: nowrap; }
+      .file-li { padding: 8px 2px; font-size: 0.98em; }
+      .file-info strong { font-size: 1em; }
+      .file-meta { font-size: 11px; }
+      .btn { padding: 7px 10px; font-size: 0.98em; }
+      .file-actions { gap: 4px; }
+      .upload-area { padding: 32px 0; font-size: 1em; }
+    }
+    @media (max-width: 400px) {
+      .header h1 { font-size: 1em; }
+      .btn { font-size: 0.92em; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📁 LAN 文件传输</h1>
+      <p>在局域网内轻松共享和管理文件</p>
+    </div>
+
+    <div class="content">
+      <div id="breadcrumb" style="margin-bottom: 10px;"></div>
+      <div class="section">
+        <h2>📤 上传文件</h2>
+        <div class="upload-area" id="uploadArea">
+          <div>📁 点击或拖拽文件到此处上传</div>
+          <input type="file" id="fileInput" multiple webkitdirectory directory style="display: none;" />
+        </div>
+        <div id="uploadStatus" class="status"></div>
+        <progress id="uploadProgress" value="0" max="100" style="width: 100%; display: none; margin-top: 10px;"></progress>
+      </div>
+
+      <div class="section">
+        <h2>📋 文件列表</h2>
+        <button onclick="loadFiles()" style="margin-bottom: 10px;">🔄 刷新文件列表</button>
+        <div class="file-list" id="fileList">
+          <div style="text-align: center; padding: 20px; color: #666;">暂无文件</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const uploadStatus = document.getElementById('uploadStatus');
+    const uploadProgress = document.getElementById('uploadProgress');
+    const fileList = document.getElementById('fileList');
+
+    uploadArea.onclick = () => fileInput.click();
+    fileInput.onchange = (e) => uploadFiles(e.target.files);
+    uploadArea.ondragover = (e) => e.preventDefault();
+    uploadArea.ondrop = async (e) => {
+      e.preventDefault();
+      // 判断是否有 items（拖拽文件夹时才有）
+      if (e.dataTransfer.items && e.dataTransfer.items[0] && e.dataTransfer.items[0].webkitGetAsEntry) {
+        const files = [];
+        await traverseFileTree(e.dataTransfer.items, files);
+        uploadFiles(files);
+      } else {
+        uploadFiles(e.dataTransfer.files);
+      }
+    };
+
+    let currentDir = '';
+
+    function updateBreadcrumb() {
+      const nav = document.getElementById('breadcrumb');
+      const segs = currentDir.split('/').filter(Boolean);
+      let html = '<span style="cursor:pointer;color:#2196F3;" onclick="gotoDir(\'\')">根目录</span>';
+      let path = '';
+      for (let i = 0; i < segs.length; i++) {
+        path += (i === 0 ? '' : '/') + segs[i];
+        html += '<span class="sep">›</span><span style="cursor:pointer;color:#2196F3;" onclick="gotoDir(\'' + path + '/\')">' + segs[i] + '</span>';
+      }
+      nav.innerHTML = html;
+    }
+
+    function gotoDir(dir) {
+      currentDir = dir;
+      updateBreadcrumb();
+      loadFiles();
+    }
+
+    function showStatus(message, type = 'info') {
+      uploadStatus.textContent = message;
+      uploadStatus.className = 'status ' + type;
+      uploadStatus.style.display = 'block';
+    }
+
+    function hideStatus(delay = 2000) {
+      setTimeout(() => {
+        uploadStatus.style.display = 'none';
+        uploadProgress.style.display = 'none';
+      }, delay);
+    }
+
+    function uploadFiles(files) {
+      const total = files.length;
+      if (total === 0) return;
+      showStatus(`正在上传 0/${total}`, 'info');
+      uploadProgress.style.display = 'block';
+      uploadProgress.value = 0;
+
+      // 一次性上传所有文件到当前目录
+      const xhr = new XMLHttpRequest();
+      const formData = new FormData();
+      for (let file of files) {
+        formData.append('file', file, file.webkitRelativePath || file.name);
+      }
+      xhr.open('POST', '/upload?dir=' + encodeURIComponent(currentDir), true);
+
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          const percent = Math.round((e.loaded / e.total) * 100);
+          uploadProgress.value = percent;
+        }
+      };
+
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          showStatus('✅ 全部上传完成', 'success');
+          hideStatus();
+          loadFiles();
+        } else {
+          showStatus(`❌ 上传失败: ${xhr.responseText}`, 'error');
+          hideStatus();
+        }
+      };
+
+      xhr.onerror = () => {
+        showStatus('❌ 上传出错', 'error');
+        hideStatus();
+      };
+
+      xhr.send(formData);
+    }
+
+    async function loadFiles() {
+      try {
+        const response = await fetch('/files?dir=' + encodeURIComponent(currentDir));
+        const data = await response.json();
+        fileList.innerHTML = '';
+        renderFileTree(data.files || [], currentDir, fileList);
+      } catch (error) {
+        showStatus('加载文件列表失败', 'error');
+      }
+    }
+
+    // 预览弹窗
+    function showPreviewModal(contentHtml) {
+      let modal = document.getElementById('previewModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'previewModal';
+        modal.style.position = 'fixed';
+        modal.style.left = '0';
+        modal.style.top = '0';
+        modal.style.width = '100vw';
+        modal.style.height = '100vh';
+        modal.style.background = 'rgba(0,0,0,0.45)';
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+        modal.style.zIndex = '9999';
+        modal.innerHTML = '<div id="previewContent" style="background:white;max-width:90vw;max-height:90vh;padding:18px 18px 10px 18px;border-radius:8px;box-shadow:0 2px 16px #0002;position:relative;overflow:auto;"></div>';
+        document.body.appendChild(modal);
+        modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+      }
+      document.getElementById('previewContent').innerHTML = contentHtml + '<button style="position:absolute;top:8px;right:12px;font-size:1.3em;background:none;border:none;cursor:pointer;color:#888;" onclick="document.getElementById(\'previewModal\').style.display=\'none\'">×</button>';
+      modal.style.display = 'flex';
+    }
+
+    // 文件类型判断
+    function getFileType(name) {
+      const ext = name.split('.').pop().toLowerCase();
+      if (["jpg","jpeg","png","gif","webp","bmp","svg"].includes(ext)) return 'image';
+      if (["txt","md","json","log","js","css","html","xml","csv"].includes(ext)) return 'text';
+      if (["pdf"].includes(ext)) return 'pdf';
+      if (["mp3","wav","ogg","aac","m4a"].includes(ext)) return 'audio';
+      if (["mp4","webm","mov","avi","mkv"].includes(ext)) return 'video';
+      return 'other';
+    }
+
+    // 预览文件
+    async function previewFile(filePath, fileName) {
+      const type = getFileType(fileName);
+      if (type === 'image') {
+        showPreviewModal(`<img src="/download?file=${encodeURIComponent(filePath)}" style="max-width:80vw;max-height:70vh;display:block;margin:auto;" />`);
+      } else if (type === 'text') {
+        const resp = await fetch('/download?file=' + encodeURIComponent(filePath));
+        const text = await resp.text();
+        showPreviewModal(`<pre style="max-width:80vw;max-height:70vh;overflow:auto;font-size:1em;background:#f7f7f7;padding:12px;border-radius:6px;">${escapeHtml(text)}</pre>`);
+      } else if (type === 'pdf') {
+        showPreviewModal(`<iframe src="/download?file=${encodeURIComponent(filePath)}" style="width:80vw;height:70vh;border:none;"></iframe>`);
+      } else if (type === 'audio') {
+        showPreviewModal(`<audio src="/download?file=${encodeURIComponent(filePath)}" controls style="width:80vw;max-width:400px;"></audio>`);
+      } else if (type === 'video') {
+        showPreviewModal(`<video src="/download?file=${encodeURIComponent(filePath)}" controls style="width:80vw;max-width:600px;max-height:60vh;"></video>`);
+      } else {
+        showPreviewModal('<div style="padding:30px 40px;text-align:center;">暂不支持该类型文件预览</div>');
+      }
+    }
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, function (c) {
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+      });
+    }
+
+    // 递归渲染文件树（只显示当前目录内容）
+    function renderFileTree(files, parentPath, container) {
+      if (!files || files.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">暂无文件</div>';
+        return;
+      }
+      const ul = document.createElement('ul');
+      ul.className = 'file-ul';
+      files.forEach(file => {
+        const li = document.createElement('li');
+        li.className = 'file-li';
+        if (file.type === 'folder') {
+          li.innerHTML = `
+            <span class="file-icon" onclick="gotoDir('${(currentDir + file.name + '/').replace(/'/g, "\\'")}')">📁</span>
+            <div class="file-info" onclick="gotoDir('${(currentDir + file.name + '/').replace(/'/g, "\\'")}')"><strong>${file.name}</strong></div>
+            <div class="file-actions">
+              <button class="btn btn-success" onclick="event.stopPropagation();location.href='/download?file=${encodeURIComponent(currentDir + file.name)}'"><span>📦</span>下载zip</button>
+              <button class="btn btn-danger" onclick="event.stopPropagation();deleteFile('${(currentDir + file.name).replace(/'/g, "\\'")}')"><span>🗑️</span>删除</button>
+            </div>
+          `;
+        } else {
+          const filePath = currentDir + file.name;
+          const safeDownloadName = file.name.replace(/[^-\u007F\u4e00-\u9fa5.-]/g, '_');
+          const type = getFileType(file.name);
+          let icon = '📦';
+          if (type === 'image') icon = '🖼️';
+          else if (type === 'text') icon = '📄';
+          else if (type === 'pdf') icon = '📕';
+          else if (type === 'audio') icon = '🎵';
+          else if (type === 'video') icon = '🎬';
+          li.innerHTML = `
+            <span class="file-icon">${icon}</span>
+            <div class="file-info"><strong style="cursor:pointer;color:#1976d2;" onclick="previewFile('${filePath.replace(/'/g, "\\'")}', '${file.name.replace(/'/g, "\\'")}')">${file.name}</strong><div class="file-meta">${file.sizeFormatted} • ${new Date(file.modified).toLocaleString()}</div></div>
+            <div class="file-actions">
+              <a href="/download?file=${encodeURIComponent(filePath)}" class="btn btn-success" download="${safeDownloadName}"><span>📥</span>下载</a>
+              <button class="btn btn-danger" onclick="deleteFile('${filePath.replace(/'/g, "\\'")}')"><span>🗑️</span>删除</button>
+            </div>
+          `;
+        }
+        ul.appendChild(li);
+      });
+      container.appendChild(ul);
+    }
+
+    async function deleteFile(name) {
+      if (!confirm(`确定要删除 "${name}" 吗？（文件夹将递归删除）`)) return;
+      try {
+        const response = await fetch('/delete?file=' + encodeURIComponent(name), { method: 'POST' });
+        const result = await response.json();
+        if (result.success) {
+          showStatus('✅ 删除成功', 'success');
+          loadFiles();
+        } else {
+          showStatus('❌ 删除失败', 'error');
+        }
+      } catch (e) {
+        showStatus('❌ 删除出错', 'error');
+      }
+    }
+
+    // 递归读取文件夹
+    async function traverseFileTree(items, files, path = '') {
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i].webkitGetAsEntry();
+        if (!item) continue;
+        await readEntry(item, files, path);
+      }
+    }
+
+    async function readEntry(entry, files, path) {
+      return new Promise((resolve) => {
+        if (entry.isFile) {
+          entry.file((file) => {
+            // 模拟 webkitRelativePath
+            Object.defineProperty(file, 'webkitRelativePath', {
+              value: path + entry.name,
+            });
+            files.push(file);
+            resolve();
+          });
+        } else if (entry.isDirectory) {
+          const dirReader = entry.createReader();
+          dirReader.readEntries(async (entries) => {
+            for (const ent of entries) {
+              await readEntry(ent, files, path + entry.name + '/');
+            }
+            resolve();
+          });
+        } else {
+          resolve();
+        }
+      });
+    }
+
+    // 页面加载时初始化
+    window.gotoDir = gotoDir;
+    window.onload = () => {
+      updateBreadcrumb();
+      loadFiles();
+    };
+
+    // 上传区域移动端优化
+    function isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+    if (isMobile()) {
+      uploadArea.innerHTML = '<div class="icon">📁</div><div>点击选择文件/文件夹上传</div>';
+      uploadArea.ondragover = null;
+      uploadArea.ondrop = null;
+    } else {
+      uploadArea.innerHTML = '<div class="icon">📁</div><div>点击或拖拽文件/文件夹到此处上传</div>';
+    }
+  </script>
+</body>
+</html>
