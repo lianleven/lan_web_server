@@ -2,9 +2,7 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 import '../utils/response_utils.dart';
 import '../utils/log_utils.dart';
-import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
-import 'dart:typed_data';
 import '../utils/file_utils.dart';
 
 Future<void> handleDownload(HttpRequest request, String sharedDir) async {

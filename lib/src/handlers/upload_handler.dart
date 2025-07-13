@@ -58,7 +58,7 @@ Future<void> handleUpload(HttpRequest request, String sharedDir) async {
       var candidate = rootDir;
       var counter = 1;
       while (await Directory(path.join(sharedDir, dirParam, candidate)).exists()) {
-        candidate = rootDir + '_$counter';
+        candidate = '${rootDir}_$counter';
         counter++;
       }
       newRootDir = candidate;
