@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 class AssetLoader {
 
   /// 从assets加载HTML文件
-  static const _package = 'web_server';
+  static const _package = 'lan_web_server';
 
   static Future<String> loadAsset(String relativePath) async {
     final packagePath = 'packages/$_package/$relativePath';

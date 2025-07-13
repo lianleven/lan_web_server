@@ -2,11 +2,10 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:web_server/web_server.dart';
+import 'package:lan_web_server/lan_web_server.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -367,7 +366,6 @@ class _StatusCard extends StatelessWidget {
     required this.sharedDir,
     required this.errorMessage,
     required this.onCopy,
-    super.key,
   });
   @override
   Widget build(BuildContext context) {
@@ -462,7 +460,6 @@ class _ControlButtons extends StatelessWidget {
     required this.isOperating,
     required this.onStart,
     required this.onStop,
-    super.key,
   });
   @override
   Widget build(BuildContext context) {
@@ -500,7 +497,7 @@ class _QrCodeCard extends StatelessWidget {
   final bool isRunning;
   final String? selectedIp;
   final int port;
-  const _QrCodeCard({required this.isRunning, required this.selectedIp, required this.port, super.key});
+  const _QrCodeCard({required this.isRunning, required this.selectedIp, required this.port});
   @override
   Widget build(BuildContext context) {
     if (!isRunning || selectedIp == null) return const SizedBox.shrink();
@@ -566,7 +563,6 @@ class _FileListCard extends StatelessWidget {
     required this.onDelete,
     required this.getFileIcon,
     required this.formatDate,
-    super.key,
   });
   @override
   Widget build(BuildContext context) {
@@ -658,12 +654,12 @@ class _FileListCard extends StatelessWidget {
 
 // 底部版权卡片
 class _FooterCard extends StatelessWidget {
-  const _FooterCard({super.key});
+  const _FooterCard();
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'web_server © 2025 by lianleven | v1.0.0',
+        'lan_web_server © 2025 by lianleven | v1.0.0',
         style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
       ),
     );

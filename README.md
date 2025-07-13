@@ -1,6 +1,6 @@
 [中文文档 (Chinese README)](README_ZH.md)
 
-# web_server
+# lan_web_server
 
 A cross-platform Flutter/Dart LAN file sharing server. Easily upload, download, delete, and browse files or folders via a beautiful web interface. Works on desktop, mobile, and embedded devices, making local file access and management simple and efficient.
 
@@ -87,6 +87,6 @@ http://<your-local-ip>:8080/
 ## Contributing & Feedback
 
 Issues, PRs, and suggestions are welcome!  
-For custom features, bug reports, or ideas, please contact the author or submit to [GitHub Issues](https://github.com/lianleven/web_server/issues).
+For custom features, bug reports, or ideas, please contact the author or submit to [GitHub Issues](https://github.com/lianleven/lan_web_server/issues).
 
 ---

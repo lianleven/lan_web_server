@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import 'package:web_server/src/utils/asset_loader.dart';
+import 'package:lan_web_server/src/utils/asset_loader.dart';
 import 'package:flutter/foundation.dart';
-import 'package:web_server/src/handlers/upload_handler.dart';
-import 'package:web_server/src/handlers/download_handler.dart';
-import 'package:web_server/src/handlers/file_list_handler.dart';
-import 'package:web_server/src/handlers/delete_handler.dart';
-import 'package:web_server/src/utils/file_utils.dart';
-import 'package:web_server/src/utils/response_utils.dart';
+import 'package:lan_web_server/src/handlers/upload_handler.dart';
+import 'package:lan_web_server/src/handlers/download_handler.dart';
+import 'package:lan_web_server/src/handlers/file_list_handler.dart';
+import 'package:lan_web_server/src/handlers/delete_handler.dart';
+import 'package:lan_web_server/src/utils/file_utils.dart';
+import 'package:lan_web_server/src/utils/response_utils.dart';
 
 /// Web服务器状态
 enum WebServerState {

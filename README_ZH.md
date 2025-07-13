@@ -1,4 +1,4 @@
-# web_server
+# lan_web_server
 
 一个跨平台的 Flutter/Dart 局域网文件共享服务器，支持文件/文件夹的上传、下载、删除和浏览。适用于桌面、移动端和嵌入式设备，轻松实现本地文件的 Web 访问与管理。
 
@@ -85,7 +85,7 @@ http://<本机IP>:8080/
 ## 贡献与反馈
 
 欢迎提 issue、PR 或建议！  
-如需定制功能、发现 bug 或有更好的想法，欢迎联系作者或提交到 [GitHub Issues](https://github.com/lianleven/web_server/issues)。
+如需定制功能、发现 bug 或有更好的想法，欢迎联系作者或提交到 [GitHub Issues](https://github.com/lianleven/lan_web_server/issues)。
 
 ---
 
