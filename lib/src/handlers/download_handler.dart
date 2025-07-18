@@ -26,7 +26,10 @@ Future<void> handleDownload(HttpRequest request, String sharedDir) async {
       // 创建临时 zip 文件
       final tempDir = Directory.systemTemp;
       final tempZip = File(
-        path.join(tempDir.path, '${DateTime.now().millisecondsSinceEpoch}_${path.basename(filename)}.zip'),
+        path.join(
+          tempDir.path,
+          '${DateTime.now().millisecondsSinceEpoch}_${path.basename(filename)}.zip',
+        ),
       );
       final outputStream = OutputFileStream(tempZip.path);
       ZipEncoder().encode(archive, output: outputStream);
@@ -35,7 +38,8 @@ Future<void> handleDownload(HttpRequest request, String sharedDir) async {
       final zipFilename = '${path.basename(filename)}.zip';
       final asciiZipFilename = zipFilename.replaceAll(RegExp(r'[^\x00-\x7F]'), '_');
       final encodedZipFilename = Uri.encodeComponent(zipFilename);
-      final contentDisposition = 'attachment; filename="$asciiZipFilename"; filename*=UTF-8\'\'$encodedZipFilename';
+      final contentDisposition =
+          'attachment; filename="$asciiZipFilename"; filename*=UTF-8\'\'$encodedZipFilename';
       request.response.headers.set('Content-Type', 'application/zip');
       request.response.headers.set('Content-Disposition', contentDisposition);
       request.response.headers.set('Content-Length', zipLength.toString());
@@ -53,7 +57,8 @@ Future<void> handleDownload(HttpRequest request, String sharedDir) async {
       // 修正Content-Disposition，filename只用ASCII
       final asciiFilename = filename.replaceAll(RegExp(r'[^\x00-\x7F]'), '_');
       final encodedFilename = Uri.encodeComponent(filename);
-      final contentDisposition = 'attachment; filename="$asciiFilename"; filename*=UTF-8\'\'$encodedFilename';
+      final contentDisposition =
+          'attachment; filename="$asciiFilename"; filename*=UTF-8\'\'$encodedFilename';
       request.response.headers.set('Content-Type', contentType);
       request.response.headers.set('Content-Disposition', contentDisposition);
       request.response.headers.set('Content-Length', fileLength.toString());
@@ -81,4 +86,4 @@ Future<void> _addDirectoryToArchive(Archive archive, Directory dir, String rootP
       await _addDirectoryToArchive(archive, entity, rootPath);
     }
   }
-} 
+}

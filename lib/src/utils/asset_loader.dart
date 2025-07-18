@@ -1,7 +1,6 @@
 import 'package:flutter/services.dart';
 
 class AssetLoader {
-
   /// 从assets加载HTML文件
   static const _package = 'lan_web_server';
 

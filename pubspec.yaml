@@ -1,6 +1,6 @@
 name: lan_web_server
-description: "A cross-platform Flutter/Dart LAN file sharing server. Easily upload, download, delete, and browse files or folders via a beautiful web interface. Works on desktop, mobile, and embedded devices, making local file access and management simple and efficient."
-version: 1.0.0
+description: "A cross-platform LAN file sharing server with a simple web interface for uploading, downloading, and managing files."
+version: 1.0.1
 homepage: https://github.com/lianleven/lan_web_server
 repository: https://github.com/lianleven/lan_web_server
 documentation: https://github.com/lianleven/lan_web_server/blob/main/README.md

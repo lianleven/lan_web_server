@@ -24,10 +24,7 @@ Future<void> handleDelete(HttpRequest request, String sharedDir) async {
     }
     await _deleteEntity(entity);
     logInfo('Deleted: $filename');
-    await sendJsonResponse(request, {
-      'success': true,
-      'message': 'Deleted successfully',
-    });
+    await sendJsonResponse(request, {'success': true, 'message': 'Deleted successfully'});
   } catch (e) {
     logError('Error deleting file/folder: $e');
     await sendErrorResponse(request, 500, 'Delete failed: $e');
@@ -43,4 +40,4 @@ Future<void> _deleteEntity(FileSystemEntity entity) async {
   } else if (entity is File) {
     await entity.delete();
   }
-} 
+}

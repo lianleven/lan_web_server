@@ -11,39 +11,30 @@ import 'package:lan_web_server/src/utils/file_utils.dart';
 import 'package:lan_web_server/src/utils/response_utils.dart';
 
 /// Web服务器状态
-enum WebServerState {
-  stopped,
-  starting,
-  running,
-  stopping,
-  error,
-}
+enum WebServerState { stopped, starting, running, stopping, error }
 
 /// Web服务器服务
 class WebServerService {
   HttpServer? _server;
   final int port;
   final String sharedDir;
-  
+
   final _stateController = StreamController<WebServerState>.broadcast();
   final _logController = StreamController<String>.broadcast();
   final _uploadController = StreamController<String>.broadcast();
-  
+
   Stream<WebServerState> get onStateChanged => _stateController.stream;
   Stream<String> get onLog => _logController.stream;
   Stream<String> get onUpload => _uploadController.stream;
-  
+
   WebServerState _state = WebServerState.stopped;
   WebServerState get state => _state;
-  
+
   String get uploadDir => sharedDir;
   String get downloadDir => sharedDir;
   String get sharedDirectory => sharedDir;
 
-  WebServerService({
-    required this.port,
-    required this.sharedDir,
-  }) {
+  WebServerService({required this.port, required this.sharedDir}) {
     _ensureDirectoryExists();
   }
 
@@ -70,14 +61,13 @@ class WebServerService {
     try {
       _setState(WebServerState.starting);
       _log('Starting web server on port $port...');
-      
+
       _server = await HttpServer.bind(InternetAddress.anyIPv4, port);
       _log('Web server started on port $port');
-      
+
       _server!.listen(_handleRequest);
       _setState(WebServerState.running);
       _log('Web server is ready');
-      
     } catch (e) {
       _setState(WebServerState.error);
       _log('Failed to start web server: $e');
@@ -94,13 +84,12 @@ class WebServerService {
     try {
       _setState(WebServerState.stopping);
       _log('Stopping web server...');
-      
+
       await _server?.close();
       _server = null;
-      
+
       _setState(WebServerState.stopped);
       _log('Web server stopped');
-      
     } catch (e) {
       _setState(WebServerState.error);
       _log('Error stopping web server: $e');
@@ -130,6 +119,13 @@ class WebServerService {
         case '/delete':
           await handleDelete(request, sharedDir);
           break;
+        case '/save':
+          if (request.method == 'POST') {
+            await handleSaveTextFile(request, sharedDir);
+          } else {
+            await sendErrorResponse(request, 405, 'Method Not Allowed');
+          }
+          break;
         default:
           await _handleFile(request);
       }
@@ -149,7 +145,7 @@ class WebServerService {
   Future<void> _handleFile(HttpRequest request) async {
     final filePath = path.join(sharedDir, request.uri.path.substring(1));
     final file = File(filePath);
-    
+
     if (!await file.exists()) {
       await sendErrorResponse(request, 404, 'File not found');
       return;
@@ -158,22 +154,20 @@ class WebServerService {
     try {
       final stream = file.openRead();
       final length = await file.length();
-      
+
       // 设置正确的Content-Type
       final ext = path.extension(filePath).toLowerCase();
       final contentType = getContentType(ext);
       request.response.headers.set('Content-Type', contentType);
       request.response.headers.set('Content-Length', length.toString());
-      
+
       await request.response.addStream(stream);
       await request.response.close();
-      
     } catch (e) {
       _log('Error serving file: $e');
       await sendErrorResponse(request, 500, 'Failed to serve file');
     }
   }
-
 
   /// 设置状态
   void _setState(WebServerState newState) {
@@ -198,7 +192,4 @@ class WebServerService {
     _logController.close();
     _uploadController.close();
   }
-
 }
-
- 

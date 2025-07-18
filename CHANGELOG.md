@@ -1,3 +1,14 @@
+## 1.0.1 (2025-07-19)
+
+### Features & Improvements
+- JSON editor now highlights error lines and displays error line numbers for invalid JSON (compatible with Chrome, Firefox, Safari)
+- JSON format button error messages are shown just below the button for better clarity
+- Editor modal and CodeMirror area are now fully responsive and auto-resize for better editing experience
+- Improved YAML, TXT and other text file editing (preview, save, error handling)
+- Enhanced UI/UX: more user-friendly error/status feedback, better spacing and style details
+
+---
+
 ## 1.0.0 (2025-07-14)
 
 ### Features

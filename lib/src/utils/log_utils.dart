@@ -8,4 +8,4 @@ void logInfo(String message) {
 void logError(String message) {
   final timestamp = DateTime.now().toIso8601String();
   debugPrint('[ERROR][$timestamp] $message');
-} 
+}

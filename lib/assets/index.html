@@ -162,6 +162,14 @@
       margin: 10px 0;
       border-radius: 3px;
       display: none;
+      z-index: 10001;
+      position: fixed;
+      left: 50%;
+      top: 40px;
+      transform: translateX(-50%);
+      min-width: 220px;
+      max-width: 90vw;
+      text-align: center;
     }
     .status.info {
       background: #e3f2fd;
@@ -174,6 +182,36 @@
     .status.error {
       background: #f8d7da;
       color: #721c24;
+    }
+    textarea#editArea {
+      font-family: 'Fira Mono', 'Consolas', 'Menlo', 'monospace';
+      border-radius: 12px;
+      border: 1.5px solid #2196F3;
+      box-shadow: 0 2px 8px #2196f333;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      resize: vertical;
+    }
+    textarea#editArea:focus {
+      border-color: #1976d2;
+      box-shadow: 0 4px 16px #2196f355;
+      background: #f0f7ff;
+    }
+    .edit-save-btn {
+      background: #2196F3;
+      color: #fff;
+      font-size: 1.08em;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 28px;
+      margin-top: 8px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #2196f322;
+      transition: background 0.18s, box-shadow 0.18s;
+    }
+    .edit-save-btn:hover {
+      background: #1976d2;
+      box-shadow: 0 4px 16px #2196f355;
     }
     @media (max-width: 600px) {
       .container { max-width: 100%; padding: 0; border-radius: 0; }
@@ -193,7 +231,78 @@
       .header h1 { font-size: 1em; }
       .btn { font-size: 0.92em; }
     }
+    @media (prefers-color-scheme: dark) {
+      body { background: #181c20; }
+      .container { background: #23272e; color: #eee; }
+      .header { background: linear-gradient(90deg, #1976d2 60%, #21CBF3 100%); color: #fff; }
+      .section, .file-list { background: #23272e; border-color: #222; }
+      textarea#editArea { background: #23272e; color: #eee; border-color: #21CBF3; }
+      textarea#editArea:focus { background: #181c20; }
+      .edit-save-btn { background: #21CBF3; color: #222; }
+      .edit-save-btn:hover { background: #1976d2; color: #fff; }
+    }
+    #codeEditor .CodeMirror {
+      height: 100% !important;
+      min-height: 200px;
+      border-radius: 12px;
+      border: 1.5px solid #2196F3;
+      box-shadow: 0 2px 12px #2196f333;
+      font-size: 1.08em;
+      background: #23272e;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    #codeEditor .CodeMirror-focused {
+      border-color: #1976d2;
+      box-shadow: 0 4px 24px #2196f355;
+    }
+    #codeEditor .CodeMirror-scrollbar-filler, #codeEditor .CodeMirror-gutter-filler {
+      background: transparent;
+    }
+    #codeEditor .CodeMirror-scrollbar {
+      background: #e3eaf2;
+      border-radius: 8px;
+    }
+    #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar {
+      width: 10px;
+      background: #e3eaf2;
+      border-radius: 8px;
+    }
+    #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb {
+      background: #b0bec5;
+      border-radius: 8px;
+    }
+    @media (prefers-color-scheme: dark) {
+      #codeEditor .CodeMirror {
+        background: #181c20;
+        border-color: #21CBF3;
+        color: #eee;
+      }
+      #codeEditor .CodeMirror-focused {
+        border-color: #21CBF3;
+        box-shadow: 0 4px 24px #21CBF355;
+      }
+      #codeEditor .CodeMirror-scrollbar {
+        background: #23272e;
+      }
+      #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb {
+        background: #374151;
+      }
+    }
+    #editorCloseBtn:hover { color: #2196F3 !important; }
+    @media (prefers-color-scheme: dark) {
+      #previewModal > div {
+        background: #181c20 !important;
+        color: #eee !important;
+      }
+    }
   </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/yaml/yaml.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/markdown/markdown.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/xml/xml.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/theme/material-darker.min.css">
 </head>
 
 <body>
@@ -360,7 +469,7 @@
     function getFileType(name) {
       const ext = name.split('.').pop().toLowerCase();
       if (["jpg","jpeg","png","gif","webp","bmp","svg"].includes(ext)) return 'image';
-      if (["txt","md","json","log","js","css","html","xml","csv"].includes(ext)) return 'text';
+      if (["txt","md","json","log","js","css","html","xml","csv","yaml","yml"].includes(ext)) return 'text';
       if (["pdf"].includes(ext)) return 'pdf';
       if (["mp3","wav","ogg","aac","m4a"].includes(ext)) return 'audio';
       if (["mp4","webm","mov","avi","mkv"].includes(ext)) return 'video';
@@ -375,7 +484,35 @@
       } else if (type === 'text') {
         const resp = await fetch('/download?file=' + encodeURIComponent(filePath));
         const text = await resp.text();
-        showPreviewModal(`<pre style="max-width:80vw;max-height:70vh;overflow:auto;font-size:1em;background:#f7f7f7;padding:12px;border-radius:6px;">${escapeHtml(text)}</pre>`);
+        const isJson = fileName.endsWith('.json');
+        showPreviewModal(`
+  <div style="display:flex;flex-direction:column;gap:8px;min-width:320px;width:80vw;max-width:900px;height:80vh;background:#23272e;border-radius:18px;box-shadow:0 8px 48px #0005;padding:32px 28px 24px 28px;position:relative;">
+    <div style="font-size:1.15em;font-weight:bold;margin-bottom:8px;color:#2196F3;">
+      编辑文件：${fileName}
+      <button id="editorCloseBtn" style="position:absolute;top:18px;right:24px;font-size:1.5em;background:none;border:none;cursor:pointer;color:#888;transition:color 0.18s;" onclick="document.getElementById('previewModal').style.display='none'">×</button>
+    </div>
+    ${isJson ? '<div id="editorJsonStatus" style="min-height:24px;font-size:1em;margin-bottom:2px;"></div>' : ''}
+    <div id="codeEditor" style="flex:1 1 0%;min-height:300px;height:auto;"></div>
+    ${isJson ? '<div id="formatJsonStatus" style="min-height:22px;font-size:0.98em;margin:6px 0 2px 0;text-align:left;"></div>' : ''}
+    <div style="text-align:right;margin-top:8px;">
+      ${isJson ? '<button class="edit-save-btn" style="margin-right:12px;font-size:1.05em;padding:10px 24px;" onclick="formatJsonInEditor()">🧹 格式化</button>' : ''}
+      <button class="edit-save-btn" style="font-size:1.1em;padding:12px 36px;" onclick="saveTextFile('${filePath.replace(/'/g, "\\'")}')">💾 保存</button>
+    </div>
+  </div>
+`);
+        let mode = 'text/plain';
+        if (fileName.endsWith('.json')) mode = {name: 'javascript', json: true};
+        else if (fileName.endsWith('.yaml') || fileName.endsWith('.yml')) mode = 'yaml';
+        else if (fileName.endsWith('.md')) mode = 'markdown';
+        window._cmEditor = CodeMirror(document.getElementById('codeEditor'), {
+          value: text,
+          mode: mode,
+          theme: 'material-darker',
+          lineNumbers: true,
+          tabSize: 2,
+          autofocus: true,
+          lineWrapping: true,
+        });
       } else if (type === 'pdf') {
         showPreviewModal(`<iframe src="/download?file=${encodeURIComponent(filePath)}" style="width:80vw;height:70vh;border:none;"></iframe>`);
       } else if (type === 'audio') {
@@ -391,6 +528,27 @@
         return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
       });
     }
+
+    async function saveTextFile(filePath) {
+      const content = window._cmEditor ? window._cmEditor.getValue() : document.getElementById('editArea')?.value || '';
+      try {
+        const resp = await fetch('/save?file=' + encodeURIComponent(filePath), {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain' },
+          body: content
+        });
+        if (resp.ok) {
+          showStatus('✅ 保存成功', 'success');
+          document.getElementById('previewModal').style.display = 'none';
+          loadFiles();
+        } else {
+          showStatus('❌ 保存失败', 'error');
+        }
+      } catch (e) {
+        showStatus('❌ 保存出错', 'error');
+      }
+    }
+    window.saveTextFile = saveTextFile;
 
     // 递归渲染文件树（只显示当前目录内容）
     function renderFileTree(files, parentPath, container) {
@@ -504,6 +662,22 @@
     } else {
       uploadArea.innerHTML = '<div class="icon">📁</div><div>点击或拖拽文件/文件夹到此处上传</div>';
     }
+
+    window.formatJsonInEditor = function() {
+      const statusDiv = document.getElementById('formatJsonStatus');
+      try {
+        const cm = window._cmEditor;
+        const val = cm.getValue();
+        const obj = JSON.parse(val);
+        cm.setValue(JSON.stringify(obj, null, 2));
+        if (statusDiv) statusDiv.textContent = '';
+      } catch (e) {
+        if (statusDiv) {
+          statusDiv.textContent = '❌ 不是合法的 JSON：' + e.message;
+          statusDiv.style.color = '#f44336';
+        }
+      }
+    };
   </script>
 </body>
 </html>

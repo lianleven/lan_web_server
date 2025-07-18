@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert'; // Added for utf8.decoder
 import 'package:path/path.dart' as path;
 import '../utils/response_utils.dart';
 import '../utils/log_utils.dart';
@@ -13,6 +14,23 @@ Future<void> handleFileList(HttpRequest request, String sharedDir) async {
   } catch (e) {
     logError('Error getting file list: $e');
     await sendErrorResponse(request, 500, 'Failed to get file list');
+  }
+}
+
+Future<void> handleSaveTextFile(HttpRequest request, String sharedDir) async {
+  final filename = request.uri.queryParameters['file'];
+  if (filename == null) {
+    await sendJsonResponse(request, {'success': false, 'error': 'No file specified'});
+    return;
+  }
+  final filePath = path.join(sharedDir, filename);
+  try {
+    final content = await utf8.decoder.bind(request).join();
+    final file = File(filePath);
+    await file.writeAsString(content);
+    await sendJsonResponse(request, {'success': true});
+  } catch (e) {
+    await sendJsonResponse(request, {'success': false, 'error': e.toString()});
   }
 }
 
@@ -51,4 +69,4 @@ Future<List<Map<String, dynamic>>> _getFileListRecursively(Directory dir) async 
     return a['name'].compareTo(b['name']);
   });
   return entries;
-} 
+}

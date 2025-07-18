@@ -91,4 +91,4 @@ Future<void> handleUpload(HttpRequest request, String sharedDir) async {
     logError('Error processing upload: $e');
     await sendErrorResponse(request, 500, 'Upload failed: $e');
   }
-} 
+}
