@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
@@ -173,8 +175,9 @@ class _WebServerPageState extends State<WebServerPage> {
   Future<void> _downloadFile(String? filename) async {
     if (filename == null) return;
     final url = 'http://${_selectedIp ?? '127.0.0.1'}:$_webServerPort/download?file=${Uri.encodeComponent(filename)}';
-    if (await canLaunch(url)) {
-      await launch(url);
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please open in browser: $url'), duration: const Duration(seconds: 3)),

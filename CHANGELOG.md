@@ -1,3 +1,9 @@
+## 1.0.1+2 (2025-07-19)
+
+### Features
+- Adjust the versions of dependent libraries
+
+
 ## 1.0.1+1 (2025-07-19)
 
 ### Features
