@@ -1,3 +1,8 @@
+## 1.0.1+1 (2025-07-19)
+
+### Features
+- flutter version support 3.27.4
+
 ## 1.0.1 (2025-07-19)
 
 ### Features & Improvements

@@ -1,13 +1,13 @@
 name: lan_web_server
 description: "A cross-platform LAN file sharing server with a simple web interface for uploading, downloading, and managing files."
-version: 1.0.1
+version: 1.0.1+1
 homepage: https://github.com/lianleven/lan_web_server
 repository: https://github.com/lianleven/lan_web_server
 documentation: https://github.com/lianleven/lan_web_server/blob/main/README.md
 
 
 environment:
-  sdk: ^3.8.1
+  sdk: ^3.3.2
   flutter: ">=1.17.0"
 
 dependencies:
@@ -15,7 +15,7 @@ dependencies:
     sdk: flutter
 
   mime: ^2.0.0
-  path: ^1.9.1
+  path: ^1.9.0
   path_provider: ^2.1.5
   archive: ^3.4.6
 
