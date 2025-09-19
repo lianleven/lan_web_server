@@ -3,116 +3,278 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="局域网文件传输工具，支持文件上传、下载、预览和管理" />
+  <meta name="keywords" content="文件传输,局域网,文件共享,文件管理" />
   <title>LAN 文件传输</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📁</text></svg>">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+    
+    :root {
+      --primary-color: #2196F3;
+      --primary-light: #21CBF3;
+      --primary-dark: #1976d2;
+      --success-color: #4CAF50;
+      --error-color: #f44336;
+      --warning-color: #ff9800;
+      --text-primary: #333;
+      --text-secondary: #666;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f5;
+      --border-color: #e0e0e0;
+      --shadow-light: 0 2px 8px rgba(0,0,0,0.1);
+      --shadow-medium: 0 4px 16px rgba(0,0,0,0.15);
+      --border-radius: 8px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
     body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: linear-gradient(120deg, #e3f0ff 0%, #f5f5f5 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       padding: 20px;
       min-height: 100vh;
+      line-height: 1.6;
+      color: var(--text-primary);
     }
     .container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 24px rgba(33, 150, 243, 0.08), 0 1.5px 4px rgba(0,0,0,0.04);
+      background: var(--bg-primary);
+      border-radius: 16px;
+      box-shadow: var(--shadow-medium);
       overflow: hidden;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      animation: slideUp 0.6s ease-out;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     .header {
-      background: linear-gradient(90deg, #2196F3 60%, #21CBF3 100%);
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
       color: white;
-      padding: 28px 20px 20px 20px;
+      padding: 32px 24px 24px 24px;
       text-align: center;
-      border-radius: 12px 12px 0 0;
-      box-shadow: 0 2px 8px rgba(33,150,243,0.08);
+      border-radius: 16px 16px 0 0;
+      box-shadow: var(--shadow-light);
       position: relative;
+      overflow: hidden;
+    }
+    
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+      pointer-events: none;
     }
     .theme-toggle {
       position: absolute;
-      top: 20px;
-      right: 20px;
-      background: rgba(255,255,255,0.2);
-      border: none;
+      top: 24px;
+      right: 24px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
       border-radius: 50%;
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2em;
-      transition: background 0.2s;
+      font-size: 1.3em;
+      transition: var(--transition);
+      backdrop-filter: blur(10px);
+      z-index: 10;
     }
     .theme-toggle:hover {
-      background: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.25);
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .theme-toggle:active {
+      transform: scale(0.95);
     }
     .header h1 {
-      font-size: 2.2em;
-      margin-bottom: 8px;
-      letter-spacing: 1px;
+      font-size: 2.4em;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .header p {
+      font-size: 1.1em;
+      opacity: 0.9;
+      font-weight: 300;
+      position: relative;
+      z-index: 1;
     }
     .content {
-      padding: 28px 24px 24px 24px;
+      padding: 32px 28px 28px 28px;
     }
+    
     #breadcrumb {
-      margin-bottom: 18px;
-      font-size: 1.08em;
-      color: #1976d2;
+      margin-bottom: 24px;
+      font-size: 1.1em;
+      color: var(--primary-color);
       user-select: none;
+      background: rgba(33, 150, 243, 0.05);
+      padding: 12px 16px;
+      border-radius: var(--border-radius);
+      border-left: 4px solid var(--primary-color);
+      font-weight: 500;
     }
     #breadcrumb span {
       cursor: pointer;
-      color: #1976d2;
-      transition: color 0.2s;
+      color: var(--primary-color);
+      transition: var(--transition);
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+    #breadcrumb span:hover {
+      background: rgba(33, 150, 243, 0.1);
+      color: var(--primary-dark);
+      transform: translateY(-1px);
     }
     #breadcrumb span.active {
-      color: #333;
-      font-weight: bold;
+      color: var(--text-primary);
+      font-weight: 600;
       cursor: default;
+      background: rgba(0,0,0,0.05);
     }
     #breadcrumb .sep {
-      color: #90caf9;
-      margin: 0 6px;
-      font-weight: bold;
+      color: var(--text-secondary);
+      margin: 0 8px;
+      font-weight: 600;
+      opacity: 0.6;
     }
     .section {
-      margin-bottom: 24px;
-      padding: 18px;
-      border: 1px solid #e3eaf2;
-      border-radius: 8px;
-      background: #fafdff;
-      box-shadow: 0 1px 2px rgba(33,150,243,0.03);
+      margin-bottom: 28px;
+      padding: 24px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background: var(--bg-primary);
+      box-shadow: var(--shadow-light);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+      opacity: 0;
+      transition: var(--transition);
+    }
+    
+    .section:hover::before {
+      opacity: 1;
+    }
+    
+    .section:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
     }
     .upload-area {
-      border: 2.5px dashed #2196F3;
-      padding: 48px 0;
+      border: 3px dashed var(--primary-color);
+      padding: 56px 24px;
       text-align: center;
       cursor: pointer;
-      border-radius: 8px;
-      background: #f0f7ff;
-      transition: border-color 0.2s, background 0.2s;
-      font-size: 1.15em;
-      margin-bottom: 8px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(33, 203, 243, 0.05) 100%);
+      transition: var(--transition);
+      font-size: 1.2em;
+      margin-bottom: 16px;
       position: relative;
+      font-weight: 500;
+      color: var(--text-primary);
     }
+    
+    .upload-area::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 203, 243, 0.1) 100%);
+      opacity: 0;
+      transition: var(--transition);
+      border-radius: 12px;
+    }
+    
+    .upload-area:hover {
+      border-color: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+    
+    .upload-area:hover::before {
+      opacity: 1;
+    }
+    
     .upload-area.dragover {
-      border-color: #21CBF3;
-      background: #e3f0ff;
+      border-color: var(--primary-light);
+      background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 203, 243, 0.1) 100%);
+      transform: scale(1.02);
+      box-shadow: 0 8px 24px rgba(33, 150, 243, 0.2);
     }
     .upload-area .icon {
-      font-size: 2.2em;
-      margin-bottom: 8px;
+      font-size: 2.8em;
+      margin-bottom: 16px;
       display: block;
+      position: relative;
+      z-index: 1;
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-10px);
+      }
+      60% {
+        transform: translateY(-5px);
+      }
     }
     .file-list {
-      border: 1px solid #e3eaf2;
-      border-radius: 8px;
-      background: #fafdff;
-      min-height: 80px;
-      box-shadow: 0 1px 2px rgba(33,150,243,0.03);
-      padding: 0 0 8px 0;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background: var(--bg-primary);
+      min-height: 100px;
+      box-shadow: var(--shadow-light);
+      padding: 0;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    
+    .file-list:hover {
+      box-shadow: var(--shadow-medium);
     }
     ul.file-ul {
       list-style: none;
@@ -122,116 +284,229 @@
     .file-li {
       display: flex;
       align-items: center;
-      padding: 12px 18px;
-      border-bottom: 1px solid #f0f0f0;
-      transition: background 0.18s;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      transition: var(--transition);
       position: relative;
+      cursor: pointer;
     }
-    .file-li:last-child { border-bottom: none; }
+    .file-li:last-child { 
+      border-bottom: none; 
+    }
     .file-li:hover {
-      background: #e3f2fd;
+      background: linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(33, 203, 243, 0.05) 100%);
+      transform: translateX(4px);
+    }
+    
+    .file-li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--primary-color);
+      opacity: 0;
+      transition: var(--transition);
+    }
+    
+    .file-li:hover::before {
+      opacity: 1;
     }
     .file-icon {
-      font-size: 1.4em;
-      margin-right: 14px;
-      width: 28px;
+      font-size: 1.6em;
+      margin-right: 16px;
+      width: 32px;
       text-align: center;
-      color: #2196F3;
+      color: var(--primary-color);
+      transition: var(--transition);
+    }
+    
+    .file-li:hover .file-icon {
+      transform: scale(1.1);
+      color: var(--primary-light);
     }
     .file-info {
       flex: 1;
       min-width: 0;
     }
     .file-info strong {
-      font-size: 1.08em;
+      font-size: 1.1em;
       word-break: break-all;
+      font-weight: 600;
+      color: var(--text-primary);
+      transition: var(--transition);
     }
+    
+    .file-li:hover .file-info strong {
+      color: var(--primary-color);
+    }
+    
     .file-meta {
-      font-size: 12px;
-      color: #888;
-      margin-top: 2px;
+      font-size: 0.9em;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      font-weight: 400;
     }
     .file-actions {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       opacity: 0;
-      transition: opacity 0.18s;
+      transition: var(--transition);
+      transform: translateX(10px);
     }
     .file-li:hover .file-actions {
       opacity: 1;
+      transform: translateX(0);
     }
+    
     .btn {
-      padding: 6px 14px;
+      padding: 8px 16px;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       color: white;
-      font-size: 1em;
+      font-size: 0.9em;
       display: flex;
       align-items: center;
-      gap: 4px;
-      transition: background 0.18s, box-shadow 0.18s;
-      box-shadow: 0 1px 2px rgba(33,150,243,0.04);
+      gap: 6px;
+      transition: var(--transition);
+      box-shadow: var(--shadow-light);
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
     }
-    .btn-success { background: #4CAF50; }
-    .btn-danger { background: #f44336; }
-    .btn-success:hover { background: #388e3c; }
-    .btn-danger:hover { background: #c62828; }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: var(--transition);
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    .btn-success { 
+      background: var(--success-color);
+      box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+    }
+    .btn-danger { 
+      background: var(--error-color);
+      box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+    }
+    .btn-success:hover { 
+      background: #388e3c;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    }
+    .btn-danger:hover { 
+      background: #c62828;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+    }
     .status {
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 3px;
+      padding: 16px 24px;
+      margin: 16px 0;
+      border-radius: 8px;
       display: none;
       z-index: 10001;
       position: fixed;
       left: 50%;
       top: 40px;
       transform: translateX(-50%);
-      min-width: 220px;
+      min-width: 280px;
       max-width: 90vw;
       text-align: center;
+      font-weight: 500;
+      box-shadow: var(--shadow-medium);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      animation: slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
     }
     .status.info {
-      background: #e3f2fd;
-      color: #0d47a1;
+      background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 203, 243, 0.1) 100%);
+      color: var(--primary-dark);
+      border-left: 4px solid var(--primary-color);
     }
     .status.success {
-      background: #d4edda;
-      color: #155724;
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(139, 195, 74, 0.1) 100%);
+      color: #2e7d32;
+      border-left: 4px solid var(--success-color);
     }
     .status.error {
-      background: #f8d7da;
-      color: #721c24;
+      background: linear-gradient(135deg, rgba(244, 67, 54, 0.1) 0%, rgba(255, 87, 34, 0.1) 100%);
+      color: #c62828;
+      border-left: 4px solid var(--error-color);
     }
     textarea#editArea {
-      font-family: 'Fira Mono', 'Consolas', 'Menlo', 'monospace';
+      font-family: 'Fira Code', 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', monospace;
       border-radius: 12px;
-      border: 1.5px solid #2196F3;
-      box-shadow: 0 2px 8px #2196f333;
+      border: 2px solid var(--primary-color);
+      box-shadow: var(--shadow-light);
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: var(--transition);
       resize: vertical;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.5;
     }
     textarea#editArea:focus {
-      border-color: #1976d2;
-      box-shadow: 0 4px 16px #2196f355;
-      background: #f0f7ff;
+      border-color: var(--primary-light);
+      box-shadow: 0 4px 20px rgba(33, 150, 243, 0.2);
+      background: var(--bg-primary);
     }
     .edit-save-btn {
-      background: #2196F3;
+      background: var(--primary-color);
       color: #fff;
-      font-size: 1.08em;
+      font-size: 1.1em;
       border: none;
       border-radius: 8px;
-      padding: 10px 28px;
-      margin-top: 8px;
+      padding: 12px 32px;
+      margin-top: 12px;
       cursor: pointer;
-      box-shadow: 0 2px 8px #2196f322;
-      transition: background 0.18s, box-shadow 0.18s;
+      box-shadow: var(--shadow-light);
+      transition: var(--transition);
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
     }
+    
+    .edit-save-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: var(--transition);
+    }
+    
     .edit-save-btn:hover {
-      background: #1976d2;
-      box-shadow: 0 4px 16px #2196f355;
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+    }
+    
+    .edit-save-btn:hover::before {
+      left: 100%;
     }
     @media (max-width: 600px) {
       .container { max-width: 100%; padding: 0; border-radius: 0; }
@@ -583,9 +858,9 @@
       <div id="breadcrumb" style="margin-bottom: 10px;"></div>
       <div class="section">
         <h2>📤 上传文件</h2>
-        <div class="upload-area" id="uploadArea">
+        <div class="upload-area" id="uploadArea" role="button" tabindex="0" aria-label="文件上传区域，点击或拖拽文件到此上传">
           <div>📁 点击或拖拽文件到此处上传</div>
-          <input type="file" id="fileInput" multiple webkitdirectory directory style="display: none;" />
+          <input type="file" id="fileInput" multiple webkitdirectory directory style="display: none;" aria-label="选择文件上传" />
         </div>
         <div id="uploadStatus" class="status"></div>
         <progress id="uploadProgress" value="0" max="100" style="width: 100%; display: none; margin-top: 10px;"></progress>
@@ -609,6 +884,12 @@
     const fileList = document.getElementById('fileList');
 
     uploadArea.onclick = () => fileInput.click();
+    uploadArea.onkeydown = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        fileInput.click();
+      }
+    };
     fileInput.onchange = (e) => uploadFiles(e.target.files);
     uploadArea.ondragover = (e) => e.preventDefault();
     uploadArea.ondrop = async (e) => {
@@ -940,25 +1221,99 @@
       updateTheme();
     }
 
+    // 性能优化：防抖函数
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    // 性能优化：节流函数
+    function throttle(func, limit) {
+      let inThrottle;
+      return function() {
+        const args = arguments;
+        const context = this;
+        if (!inThrottle) {
+          func.apply(context, args);
+          inThrottle = true;
+          setTimeout(() => inThrottle = false, limit);
+        }
+      };
+    }
+
+    // 优化文件加载
+    const optimizedLoadFiles = debounce(loadFiles, 300);
+
     // 页面加载时初始化
     window.gotoDir = gotoDir;
     window.onload = () => {
       initThemeToggle();
       updateBreadcrumb();
       loadFiles();
+      
+      // 添加键盘快捷键支持
+      document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+          switch(e.key) {
+            case 'r':
+              e.preventDefault();
+              loadFiles();
+              break;
+            case 'u':
+              e.preventDefault();
+              fileInput.click();
+              break;
+          }
+        }
+      });
     };
 
-    // 上传区域移动端优化
+    // 移动端检测和优化
     function isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+             ('ontouchstart' in window) || 
+             (navigator.maxTouchPoints > 0);
     }
+    
+    // 触摸设备优化
     if (isMobile()) {
       uploadArea.innerHTML = '<div class="icon">📁</div><div>点击选择文件/文件夹上传</div>';
       uploadArea.ondragover = null;
       uploadArea.ondrop = null;
+      
+      // 添加触摸反馈
+      uploadArea.addEventListener('touchstart', () => {
+        uploadArea.style.transform = 'scale(0.98)';
+      });
+      uploadArea.addEventListener('touchend', () => {
+        uploadArea.style.transform = 'scale(1)';
+      });
     } else {
       uploadArea.innerHTML = '<div class="icon">📁</div><div>点击或拖拽文件/文件夹到此处上传</div>';
     }
+    
+    // 添加触摸手势支持
+    let touchStartY = 0;
+    document.addEventListener('touchstart', (e) => {
+      touchStartY = e.touches[0].clientY;
+    });
+    
+    document.addEventListener('touchmove', (e) => {
+      const touchY = e.touches[0].clientY;
+      const diff = touchStartY - touchY;
+      
+      // 下拉刷新
+      if (diff < -50 && window.scrollY === 0) {
+        loadFiles();
+      }
+    });
 
     window.formatJsonInEditor = function() {
       const statusDiv = document.getElementById('formatJsonStatus');
