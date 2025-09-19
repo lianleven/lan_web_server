@@ -767,6 +767,15 @@
     [data-theme="dark"] .editor-footer {
       border-top-color: var(--border-color);
     }
+    
+    [data-theme="dark"] .preview-close-btn {
+      background: rgba(0, 0, 0, 0.8);
+      color: var(--text-primary);
+    }
+    
+    [data-theme="dark"] .preview-close-btn:hover {
+      background: rgba(248, 81, 73, 0.9);
+    }
 
     @media (prefers-color-scheme: dark) {
       body { 
@@ -1110,6 +1119,37 @@
     }
     
     #editorCloseBtn:hover { color: var(--error-color) !important; }
+    
+    /* 预览容器样式 */
+    .preview-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .preview-close-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 1.8em;
+      background: rgba(0, 0, 0, 0.6);
+      border: none;
+      cursor: pointer;
+      color: white;
+      transition: var(--transition);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    
+    .preview-close-btn:hover {
+      background: rgba(244, 67, 54, 0.8);
+      transform: scale(1.1);
+    }
     @media (prefers-color-scheme: dark) {
       #previewModal > div {
         background: #0d1117 !important;
@@ -1294,7 +1334,7 @@
         document.body.appendChild(modal);
         modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
       }
-      document.getElementById('previewContent').innerHTML = contentHtml + '<button style="position:absolute;top:8px;right:12px;font-size:1.3em;background:none;border:none;cursor:pointer;color:#888;" onclick="document.getElementById(\'previewModal\').style.display=\'none\'">×</button>';
+      document.getElementById('previewContent').innerHTML = contentHtml;
       modal.style.display = 'flex';
     }
 
@@ -1313,7 +1353,12 @@
     async function previewFile(filePath, fileName) {
       const type = getFileType(fileName);
       if (type === 'image') {
-        showPreviewModal(`<img src="/download?file=${encodeURIComponent(filePath)}" style="max-width:80vw;max-height:70vh;display:block;margin:auto;" />`);
+        showPreviewModal(`
+          <div class="preview-container">
+            <button class="preview-close-btn" onclick="document.getElementById('previewModal').style.display='none'" title="关闭预览">×</button>
+            <img src="/download?file=${encodeURIComponent(filePath)}" style="max-width:80vw;max-height:70vh;display:block;margin:auto;" />
+          </div>
+        `);
       } else if (type === 'text') {
         const resp = await fetch('/download?file=' + encodeURIComponent(filePath));
         const text = await resp.text();
@@ -1377,13 +1422,33 @@
           }
         });
       } else if (type === 'pdf') {
-        showPreviewModal(`<iframe src="/download?file=${encodeURIComponent(filePath)}" style="width:80vw;height:70vh;border:none;"></iframe>`);
+        showPreviewModal(`
+          <div class="preview-container">
+            <button class="preview-close-btn" onclick="document.getElementById('previewModal').style.display='none'" title="关闭预览">×</button>
+            <iframe src="/download?file=${encodeURIComponent(filePath)}" style="width:80vw;height:70vh;border:none;"></iframe>
+          </div>
+        `);
       } else if (type === 'audio') {
-        showPreviewModal(`<audio src="/download?file=${encodeURIComponent(filePath)}" controls style="width:80vw;max-width:400px;"></audio>`);
+        showPreviewModal(`
+          <div class="preview-container">
+            <button class="preview-close-btn" onclick="document.getElementById('previewModal').style.display='none'" title="关闭预览">×</button>
+            <audio src="/download?file=${encodeURIComponent(filePath)}" controls style="width:80vw;max-width:400px;"></audio>
+          </div>
+        `);
       } else if (type === 'video') {
-        showPreviewModal(`<video src="/download?file=${encodeURIComponent(filePath)}" controls style="width:80vw;max-width:600px;max-height:60vh;"></video>`);
+        showPreviewModal(`
+          <div class="preview-container">
+            <button class="preview-close-btn" onclick="document.getElementById('previewModal').style.display='none'" title="关闭预览">×</button>
+            <video src="/download?file=${encodeURIComponent(filePath)}" controls style="width:80vw;max-width:600px;max-height:60vh;"></video>
+          </div>
+        `);
       } else {
-        showPreviewModal('<div style="padding:30px 40px;text-align:center;">暂不支持该类型文件预览</div>');
+        showPreviewModal(`
+          <div class="preview-container">
+            <button class="preview-close-btn" onclick="document.getElementById('previewModal').style.display='none'" title="关闭预览">×</button>
+            <div style="padding:30px 40px;text-align:center;">暂不支持该类型文件预览</div>
+          </div>
+        `);
       }
     }
     function escapeHtml(str) {
