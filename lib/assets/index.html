@@ -351,13 +351,13 @@
     .file-actions {
       display: flex;
       gap: 10px;
-      opacity: 0;
-      transition: var(--transition);
-      transform: translateX(10px);
-    }
-    .file-li:hover .file-actions {
       opacity: 1;
+      transition: var(--transition);
       transform: translateX(0);
+    }
+    
+    .file-li:hover .file-actions {
+      transform: scale(1.05);
     }
     
     .btn {
@@ -375,6 +375,12 @@
       font-weight: 500;
       position: relative;
       overflow: hidden;
+      opacity: 0.9;
+    }
+    
+    .btn:hover {
+      opacity: 1;
+      transform: translateY(-1px);
     }
     
     .btn::before {
@@ -526,8 +532,62 @@
       .file-info strong { font-size: 1em; }
       .file-meta { font-size: 11px; }
       .btn { padding: 7px 10px; font-size: 0.98em; }
-      .file-actions { gap: 4px; }
+      .file-actions { 
+        gap: 6px; 
+        opacity: 1;
+        transform: translateX(0);
+      }
+      
+      .btn {
+        padding: 6px 12px;
+        font-size: 0.85em;
+        gap: 4px;
+      }
       .upload-area { padding: 32px 0; font-size: 1em; }
+      
+      /* 移动端编辑器优化 */
+      .editor-modal {
+        width: 95vw;
+        height: 90vh;
+        padding: 16px;
+        gap: 12px;
+      }
+      
+      .editor-header {
+        padding-bottom: 12px;
+      }
+      
+      .editor-title {
+        font-size: 1.1em;
+        gap: 8px;
+      }
+      
+      .editor-close-btn {
+        top: 16px;
+        right: 16px;
+        width: 36px;
+        height: 36px;
+        font-size: 1.6em;
+      }
+      
+      .editor-container {
+        min-height: 300px;
+      }
+      
+      .editor-footer {
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .format-btn, .save-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      #codeEditor .CodeMirror {
+        font-size: 13px;
+        min-height: 250px;
+      }
     }
     @media (max-width: 400px) {
       .header h1 { font-size: 1em; }
@@ -671,6 +731,42 @@
     [data-theme="dark"] #previewModal {
       background: rgba(0,0,0,0.8) !important;
     }
+    
+    [data-theme="dark"] .editor-modal {
+      background: var(--bg-primary);
+      border-color: var(--border-color);
+    }
+    
+    [data-theme="dark"] .editor-header {
+      border-bottom-color: var(--border-color);
+    }
+    
+    [data-theme="dark"] .editor-title {
+      color: var(--text-primary);
+    }
+    
+    [data-theme="dark"] .editor-icon {
+      color: var(--text-accent);
+    }
+    
+    [data-theme="dark"] .editor-close-btn {
+      color: var(--text-secondary);
+    }
+    
+    [data-theme="dark"] .editor-close-btn:hover {
+      color: var(--error-color);
+      background: rgba(248, 81, 73, 0.1);
+    }
+    
+    [data-theme="dark"] .editor-status {
+      background: rgba(88, 166, 255, 0.1);
+      border-left-color: var(--text-accent);
+      color: var(--text-accent);
+    }
+    
+    [data-theme="dark"] .editor-footer {
+      border-top-color: var(--border-color);
+    }
 
     @media (prefers-color-scheme: dark) {
       body { 
@@ -780,52 +876,240 @@
     }
     #codeEditor .CodeMirror {
       height: 100% !important;
-      min-height: 200px;
+      min-height: 300px;
       border-radius: 12px;
-      border: 1.5px solid #2196F3;
-      box-shadow: 0 2px 12px #2196f333;
-      font-size: 1.08em;
-      background: #23272e;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      border: 2px solid var(--primary-color);
+      box-shadow: var(--shadow-medium);
+      font-size: 14px;
+      font-family: 'Fira Code', 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', monospace;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: var(--transition);
+      line-height: 1.6;
     }
+    
     #codeEditor .CodeMirror-focused {
-      border-color: #1976d2;
-      box-shadow: 0 4px 24px #2196f355;
+      border-color: var(--primary-light);
+      box-shadow: 0 6px 30px rgba(33, 150, 243, 0.25);
+      transform: translateY(-1px);
+    }
+    
+    #codeEditor .CodeMirror-gutters {
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border-color);
+      border-radius: 12px 0 0 12px;
+    }
+    
+    #codeEditor .CodeMirror-linenumber {
+      color: var(--text-secondary);
+      font-size: 12px;
+      padding: 0 8px;
+    }
+    
+    #codeEditor .CodeMirror-cursor {
+      border-left: 2px solid var(--primary-color);
+    }
+    
+    #codeEditor .CodeMirror-selected {
+      background: rgba(33, 150, 243, 0.1);
     }
     #codeEditor .CodeMirror-scrollbar-filler, #codeEditor .CodeMirror-gutter-filler {
       background: transparent;
     }
+    
     #codeEditor .CodeMirror-scrollbar {
-      background: #e3eaf2;
+      background: var(--bg-secondary);
       border-radius: 8px;
     }
+    
     #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar {
-      width: 10px;
-      background: #e3eaf2;
+      width: 12px;
+      background: var(--bg-secondary);
       border-radius: 8px;
     }
+    
     #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb {
-      background: #b0bec5;
+      background: var(--border-color);
+      border-radius: 8px;
+      border: 2px solid var(--bg-secondary);
+      transition: var(--transition);
+    }
+    
+    #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: var(--text-secondary);
+    }
+    
+    #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
       border-radius: 8px;
     }
     @media (prefers-color-scheme: dark) {
       #codeEditor .CodeMirror {
-        background: #0d1117;
-        border-color: #58a6ff;
-        color: #e6edf3;
+        background: var(--bg-primary);
+        border-color: var(--text-accent);
+        color: var(--text-primary);
       }
       #codeEditor .CodeMirror-focused {
         border-color: #21CBF3;
-        box-shadow: 0 4px 24px #21CBF355;
+        box-shadow: 0 6px 30px rgba(33, 203, 243, 0.3);
+      }
+      #codeEditor .CodeMirror-gutters {
+        background: var(--bg-secondary);
+        border-right-color: var(--border-color);
+      }
+      #codeEditor .CodeMirror-linenumber {
+        color: var(--text-secondary);
+      }
+      #codeEditor .CodeMirror-cursor {
+        border-left-color: var(--text-accent);
+      }
+      #codeEditor .CodeMirror-selected {
+        background: rgba(88, 166, 255, 0.1);
       }
       #codeEditor .CodeMirror-scrollbar {
-        background: #161b22;
+        background: var(--bg-secondary);
+      }
+      #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar {
+        background: var(--bg-secondary);
       }
       #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb {
-        background: #30363d;
+        background: var(--border-color);
+        border-color: var(--bg-secondary);
+      }
+      #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: var(--text-secondary);
+      }
+      #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-track {
+        background: var(--bg-secondary);
       }
     }
-    #editorCloseBtn:hover { color: #2196F3 !important; }
+    /* 编辑模态框样式 */
+    .editor-modal {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-width: 400px;
+      width: 85vw;
+      max-width: 1000px;
+      height: 85vh;
+      background: var(--bg-primary);
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 24px;
+      position: relative;
+      border: 1px solid var(--border-color);
+    }
+    
+    .editor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .editor-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.2em;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .editor-icon {
+      font-size: 1.3em;
+      color: var(--primary-color);
+    }
+    
+    .editor-close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 1.8em;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .editor-close-btn:hover {
+      color: var(--error-color);
+      background: rgba(244, 67, 54, 0.1);
+      transform: scale(1.1);
+    }
+    
+    .editor-status {
+      min-height: 28px;
+      font-size: 1em;
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      background: rgba(33, 150, 243, 0.05);
+      border-radius: 6px;
+      border-left: 3px solid var(--primary-color);
+      color: var(--primary-dark);
+    }
+    
+    .editor-container {
+      flex: 1 1 0%;
+      min-height: 400px;
+      height: auto;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .editor-format-status {
+      min-height: 24px;
+      font-size: 0.9em;
+      margin: 8px 0;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-align: left;
+    }
+    
+    .editor-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-color);
+    }
+    
+    .format-btn {
+      background: var(--warning-color);
+      color: white;
+      font-size: 1em;
+      padding: 10px 20px;
+      margin-right: 0;
+    }
+    
+    .format-btn:hover {
+      background: #f57c00;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+    }
+    
+    .save-btn {
+      background: var(--success-color);
+      color: white;
+      font-size: 1.1em;
+      padding: 12px 28px;
+    }
+    
+    .save-btn:hover {
+      background: #388e3c;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+    
+    #editorCloseBtn:hover { color: var(--error-color) !important; }
     @media (prefers-color-scheme: dark) {
       #previewModal > div {
         background: #0d1117 !important;
@@ -1035,17 +1319,20 @@
         const text = await resp.text();
         const isJson = fileName.endsWith('.json');
         showPreviewModal(`
-  <div style="display:flex;flex-direction:column;gap:8px;min-width:320px;width:80vw;max-width:900px;height:80vh;background:#23272e;border-radius:18px;box-shadow:0 8px 48px #0005;padding:32px 28px 24px 28px;position:relative;">
-    <div style="font-size:1.15em;font-weight:bold;margin-bottom:8px;color:#2196F3;">
-      编辑文件：${fileName}
-      <button id="editorCloseBtn" style="position:absolute;top:18px;right:24px;font-size:1.5em;background:none;border:none;cursor:pointer;color:#888;transition:color 0.18s;" onclick="document.getElementById('previewModal').style.display='none'">×</button>
+  <div class="editor-modal">
+    <div class="editor-header">
+      <div class="editor-title">
+        <span class="editor-icon">📝</span>
+        <span>编辑文件：${fileName}</span>
+      </div>
+      <button id="editorCloseBtn" class="editor-close-btn" onclick="document.getElementById('previewModal').style.display='none'" title="关闭编辑器">×</button>
     </div>
-    ${isJson ? '<div id="editorJsonStatus" style="min-height:24px;font-size:1em;margin-bottom:2px;"></div>' : ''}
-    <div id="codeEditor" style="flex:1 1 0%;min-height:300px;height:auto;"></div>
-    ${isJson ? '<div id="formatJsonStatus" style="min-height:22px;font-size:0.98em;margin:6px 0 2px 0;text-align:left;"></div>' : ''}
-    <div style="text-align:right;margin-top:8px;">
-      ${isJson ? '<button class="edit-save-btn" style="margin-right:12px;font-size:1.05em;padding:10px 24px;" onclick="formatJsonInEditor()">🧹 格式化</button>' : ''}
-      <button class="edit-save-btn" style="font-size:1.1em;padding:12px 36px;" onclick="saveTextFile('${filePath.replace(/'/g, "\\'")}')">💾 保存</button>
+    ${isJson ? '<div id="editorJsonStatus" class="editor-status"></div>' : ''}
+    <div id="codeEditor" class="editor-container"></div>
+    ${isJson ? '<div id="formatJsonStatus" class="editor-format-status"></div>' : ''}
+    <div class="editor-footer">
+      ${isJson ? '<button class="edit-save-btn format-btn" onclick="formatJsonInEditor()">🧹 格式化 JSON</button>' : ''}
+      <button class="edit-save-btn save-btn" onclick="saveTextFile('${filePath.replace(/'/g, "\\'")}')">💾 保存文件</button>
     </div>
   </div>
 `);
@@ -1061,6 +1348,33 @@
           tabSize: 2,
           autofocus: true,
           lineWrapping: true,
+          indentUnit: 2,
+          smartIndent: true,
+          electricChars: true,
+          autoCloseBrackets: true,
+          matchBrackets: true,
+          foldGutter: true,
+          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+          extraKeys: {
+            'Ctrl-S': function(cm) {
+              saveTextFile(filePath);
+            },
+            'Cmd-S': function(cm) {
+              saveTextFile(filePath);
+            },
+            'Ctrl-/': 'toggleComment',
+            'Cmd-/': 'toggleComment',
+            'Ctrl-Z': 'undo',
+            'Cmd-Z': 'undo',
+            'Ctrl-Y': 'redo',
+            'Cmd-Y': 'redo',
+            'Ctrl-F': 'findPersistent',
+            'Cmd-F': 'findPersistent',
+            'Ctrl-G': 'findNext',
+            'Cmd-G': 'findNext',
+            'Shift-Ctrl-G': 'findPrev',
+            'Shift-Cmd-G': 'findPrev'
+          }
         });
       } else if (type === 'pdf') {
         showPreviewModal(`<iframe src="/download?file=${encodeURIComponent(filePath)}" style="width:80vw;height:70vh;border:none;"></iframe>`);
