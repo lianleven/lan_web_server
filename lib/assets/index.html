@@ -27,6 +27,26 @@
       text-align: center;
       border-radius: 12px 12px 0 0;
       box-shadow: 0 2px 8px rgba(33,150,243,0.08);
+      position: relative;
+    }
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2em;
+      transition: background 0.2s;
+    }
+    .theme-toggle:hover {
+      background: rgba(255,255,255,0.3);
     }
     .header h1 {
       font-size: 2.2em;
@@ -219,6 +239,13 @@
       .section { padding: 6px; margin-bottom: 12px; }
       .header { padding: 18px 6px 12px 6px; border-radius: 0; }
       .header h1 { font-size: 1.3em; }
+      .theme-toggle { 
+        top: 10px; 
+        right: 10px; 
+        width: 35px; 
+        height: 35px; 
+        font-size: 1em; 
+      }
       #breadcrumb { font-size: 0.98em; margin-bottom: 10px; overflow-x: auto; white-space: nowrap; }
       .file-li { padding: 8px 2px; font-size: 0.98em; }
       .file-info strong { font-size: 1em; }
@@ -231,15 +258,250 @@
       .header h1 { font-size: 1em; }
       .btn { font-size: 0.92em; }
     }
+    
+    /* 手动暗黑模式支持 */
+    [data-theme="dark"] {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-accent: #58a6ff;
+      --border-color: #30363d;
+      --success-color: #3fb950;
+      --error-color: #f85149;
+      --warning-color: #d29922;
+    }
+
+    [data-theme="dark"] body { 
+      background: var(--bg-primary); 
+      color: var(--text-primary);
+    }
+    [data-theme="dark"] .container { 
+      background: var(--bg-secondary); 
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+    [data-theme="dark"] .section, [data-theme="dark"] .file-list { 
+      background: var(--bg-secondary); 
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+    [data-theme="dark"] .section h2 {
+      color: var(--text-primary);
+    }
+    [data-theme="dark"] .file-li {
+      color: var(--text-primary);
+      border-bottom-color: var(--border-color);
+    }
+    [data-theme="dark"] .file-li:hover {
+      background: var(--bg-tertiary);
+    }
+    [data-theme="dark"] .file-info strong {
+      color: var(--text-accent);
+    }
+    [data-theme="dark"] .file-meta {
+      color: var(--text-secondary);
+    }
+    [data-theme="dark"] .file-icon {
+      color: var(--text-accent);
+    }
+    [data-theme="dark"] #breadcrumb {
+      color: var(--text-accent);
+    }
+    [data-theme="dark"] #breadcrumb span {
+      color: var(--text-accent);
+    }
+    [data-theme="dark"] #breadcrumb span.active {
+      color: var(--text-primary);
+    }
+    [data-theme="dark"] #breadcrumb .sep {
+      color: var(--text-secondary);
+    }
+    [data-theme="dark"] .upload-area {
+      background: var(--bg-primary);
+      border-color: var(--text-accent);
+      color: var(--text-primary);
+    }
+    [data-theme="dark"] .upload-area.dragover {
+      background: var(--bg-secondary);
+      border-color: #21CBF3;
+    }
+    [data-theme="dark"] textarea#editArea { 
+      background: var(--bg-primary); 
+      color: var(--text-primary); 
+      border-color: var(--text-accent); 
+    }
+    [data-theme="dark"] textarea#editArea:focus { 
+      background: var(--bg-secondary); 
+      border-color: #21CBF3;
+    }
+    [data-theme="dark"] .edit-save-btn { 
+      background: var(--text-accent); 
+      color: var(--bg-primary); 
+    }
+    [data-theme="dark"] .edit-save-btn:hover { 
+      background: #21CBF3; 
+      color: #fff; 
+    }
+    [data-theme="dark"] .btn-success { 
+      background: #238636; 
+      color: #fff;
+    }
+    [data-theme="dark"] .btn-success:hover { 
+      background: #2ea043; 
+    }
+    [data-theme="dark"] .btn-danger { 
+      background: #da3633; 
+      color: #fff;
+    }
+    [data-theme="dark"] .btn-danger:hover { 
+      background: #f85149; 
+    }
+    [data-theme="dark"] .status.info {
+      background: var(--bg-primary);
+      color: var(--text-accent);
+      border: 1px solid var(--border-color);
+    }
+    [data-theme="dark"] .status.success {
+      background: var(--bg-primary);
+      color: var(--success-color);
+      border: 1px solid var(--border-color);
+    }
+    [data-theme="dark"] .status.error {
+      background: var(--bg-primary);
+      color: var(--error-color);
+      border: 1px solid var(--border-color);
+    }
+    [data-theme="dark"] #codeEditor .CodeMirror {
+      background: var(--bg-primary);
+      border-color: var(--text-accent);
+      color: var(--text-primary);
+    }
+    [data-theme="dark"] #codeEditor .CodeMirror-focused {
+      border-color: #21CBF3;
+      box-shadow: 0 4px 24px #21CBF355;
+    }
+    [data-theme="dark"] #codeEditor .CodeMirror-scrollbar {
+      background: var(--bg-secondary);
+    }
+    [data-theme="dark"] #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+    }
+    [data-theme="dark"] #previewModal > div {
+      background: var(--bg-primary) !important;
+      color: var(--text-primary) !important;
+      border: 1px solid var(--border-color);
+    }
+    [data-theme="dark"] #previewModal {
+      background: rgba(0,0,0,0.8) !important;
+    }
+
     @media (prefers-color-scheme: dark) {
-      body { background: #181c20; }
-      .container { background: #23272e; color: #eee; }
-      .header { background: linear-gradient(90deg, #1976d2 60%, #21CBF3 100%); color: #fff; }
-      .section, .file-list { background: #23272e; border-color: #222; }
-      textarea#editArea { background: #23272e; color: #eee; border-color: #21CBF3; }
-      textarea#editArea:focus { background: #181c20; }
-      .edit-save-btn { background: #21CBF3; color: #222; }
-      .edit-save-btn:hover { background: #1976d2; color: #fff; }
+      body { 
+        background: #0d1117; 
+        color: #e6edf3;
+      }
+      .container { 
+        background: #161b22; 
+        color: #e6edf3;
+        border: 1px solid #30363d;
+      }
+      .header { 
+        background: linear-gradient(90deg, #1976d2 60%, #21CBF3 100%); 
+        color: #fff; 
+      }
+      .section, .file-list { 
+        background: #161b22; 
+        border-color: #30363d;
+        color: #e6edf3;
+      }
+      .section h2 {
+        color: #e6edf3;
+      }
+      .file-li {
+        color: #e6edf3;
+        border-bottom-color: #30363d;
+      }
+      .file-li:hover {
+        background: #21262d;
+      }
+      .file-info strong {
+        color: #58a6ff;
+      }
+      .file-meta {
+        color: #8b949e;
+      }
+      .file-icon {
+        color: #58a6ff;
+      }
+      #breadcrumb {
+        color: #58a6ff;
+      }
+      #breadcrumb span {
+        color: #58a6ff;
+      }
+      #breadcrumb span.active {
+        color: #e6edf3;
+      }
+      #breadcrumb .sep {
+        color: #8b949e;
+      }
+      .upload-area {
+        background: #0d1117;
+        border-color: #58a6ff;
+        color: #e6edf3;
+      }
+      .upload-area.dragover {
+        background: #161b22;
+        border-color: #21CBF3;
+      }
+      textarea#editArea { 
+        background: #0d1117; 
+        color: #e6edf3; 
+        border-color: #58a6ff; 
+      }
+      textarea#editArea:focus { 
+        background: #161b22; 
+        border-color: #21CBF3;
+      }
+      .edit-save-btn { 
+        background: #58a6ff; 
+        color: #0d1117; 
+      }
+      .edit-save-btn:hover { 
+        background: #21CBF3; 
+        color: #fff; 
+      }
+      .btn-success { 
+        background: #238636; 
+        color: #fff;
+      }
+      .btn-success:hover { 
+        background: #2ea043; 
+      }
+      .btn-danger { 
+        background: #da3633; 
+        color: #fff;
+      }
+      .btn-danger:hover { 
+        background: #f85149; 
+      }
+      .status.info {
+        background: #0d1117;
+        color: #58a6ff;
+        border: 1px solid #30363d;
+      }
+      .status.success {
+        background: #0d1117;
+        color: #3fb950;
+        border: 1px solid #30363d;
+      }
+      .status.error {
+        background: #0d1117;
+        color: #f85149;
+        border: 1px solid #30363d;
+      }
     }
     #codeEditor .CodeMirror {
       height: 100% !important;
@@ -273,26 +535,30 @@
     }
     @media (prefers-color-scheme: dark) {
       #codeEditor .CodeMirror {
-        background: #181c20;
-        border-color: #21CBF3;
-        color: #eee;
+        background: #0d1117;
+        border-color: #58a6ff;
+        color: #e6edf3;
       }
       #codeEditor .CodeMirror-focused {
         border-color: #21CBF3;
         box-shadow: 0 4px 24px #21CBF355;
       }
       #codeEditor .CodeMirror-scrollbar {
-        background: #23272e;
+        background: #161b22;
       }
       #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb {
-        background: #374151;
+        background: #30363d;
       }
     }
     #editorCloseBtn:hover { color: #2196F3 !important; }
     @media (prefers-color-scheme: dark) {
       #previewModal > div {
-        background: #181c20 !important;
-        color: #eee !important;
+        background: #0d1117 !important;
+        color: #e6edf3 !important;
+        border: 1px solid #30363d;
+      }
+      #previewModal {
+        background: rgba(0,0,0,0.8) !important;
       }
     }
   </style>
@@ -308,6 +574,7 @@
 <body>
   <div class="container">
     <div class="header">
+      <button class="theme-toggle" id="themeToggle" title="切换主题">🌙</button>
       <h1>📁 LAN 文件传输</h1>
       <p>在局域网内轻松共享和管理文件</p>
     </div>
@@ -644,9 +911,39 @@
       });
     }
 
+    // 主题切换功能
+    function initThemeToggle() {
+      const themeToggle = document.getElementById('themeToggle');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      let isDark = localStorage.getItem('theme') === 'dark' || (localStorage.getItem('theme') === null && prefersDark);
+      
+      function updateTheme() {
+        if (isDark) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          document.documentElement.style.setProperty('color-scheme', 'dark');
+          themeToggle.textContent = '☀️';
+          themeToggle.title = '切换到浅色模式';
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+          document.documentElement.style.setProperty('color-scheme', 'light');
+          themeToggle.textContent = '🌙';
+          themeToggle.title = '切换到深色模式';
+        }
+      }
+      
+      themeToggle.addEventListener('click', () => {
+        isDark = !isDark;
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateTheme();
+      });
+      
+      updateTheme();
+    }
+
     // 页面加载时初始化
     window.gotoDir = gotoDir;
     window.onload = () => {
+      initThemeToggle();
       updateBreadcrumb();
       loadFiles();
     };
