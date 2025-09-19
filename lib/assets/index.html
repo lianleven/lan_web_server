@@ -986,6 +986,7 @@
         renderFileTree(data.files || [], currentDir, fileList);
       } catch (error) {
         showStatus('加载文件列表失败', 'error');
+        hideStatus(3000);
       }
     }
 
@@ -1087,13 +1088,16 @@
         });
         if (resp.ok) {
           showStatus('✅ 保存成功', 'success');
+          hideStatus(3000); // 3秒后自动隐藏
           document.getElementById('previewModal').style.display = 'none';
           loadFiles();
         } else {
           showStatus('❌ 保存失败', 'error');
+          hideStatus(3000);
         }
       } catch (e) {
         showStatus('❌ 保存出错', 'error');
+        hideStatus(3000);
       }
     }
     window.saveTextFile = saveTextFile;
@@ -1149,12 +1153,15 @@
         const result = await response.json();
         if (result.success) {
           showStatus('✅ 删除成功', 'success');
+          hideStatus(3000); // 3秒后自动隐藏
           loadFiles();
         } else {
           showStatus('❌ 删除失败', 'error');
+          hideStatus(3000);
         }
       } catch (e) {
         showStatus('❌ 删除出错', 'error');
+        hideStatus(3000);
       }
     }
 
