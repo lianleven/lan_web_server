@@ -126,14 +126,14 @@ class _WebServerPageState extends State<WebServerPage> {
   }
 
   Future<String> _getDefaultSharedDir() async {
-    if (Platform.isAndroid || Platform.isIOS) {
-      final dir = await getApplicationDocumentsDirectory();
-      await Directory('${dir.parent.path}/LANFileTransfer/test').create(recursive: true);
-      return dir.parent.path;
-    } else {
+    // if (Platform.isAndroid || Platform.isIOS) {
+    //   final dir = await getApplicationDocumentsDirectory();
+    //   await Directory('${dir.parent.path}/LANFileTransfer/test').create(recursive: true);
+    //   return dir.parent.path;
+    // } else {
       final dir = await getApplicationDocumentsDirectory();
       return '${dir.path}/LANFileTransfer/shared';
-    }
+    // }
   }
 
   void _copyToClipboard(String text) {
