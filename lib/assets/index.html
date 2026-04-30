@@ -850,7 +850,7 @@
         justify-content: center;
       }
       
-      #codeEditor .CodeMirror {
+      #codeEditor .CodeMirror, #codeEditorFull .CodeMirror {
         font-size: 13px;
         min-height: 250px;
       }
@@ -1060,19 +1060,23 @@
       color: var(--error-color);
       border: 1px solid var(--border-color);
     }
-    [data-theme="dark"] #codeEditor .CodeMirror {
+    [data-theme="dark"] #codeEditor .CodeMirror,
+    [data-theme="dark"] #codeEditorFull .CodeMirror {
       background: var(--bg-primary);
       border-color: var(--text-accent);
       color: var(--text-primary);
     }
-    [data-theme="dark"] #codeEditor .CodeMirror-focused {
+    [data-theme="dark"] #codeEditor .CodeMirror-focused,
+    [data-theme="dark"] #codeEditorFull .CodeMirror-focused {
       border-color: #21CBF3;
       box-shadow: 0 4px 24px #21CBF355;
     }
-    [data-theme="dark"] #codeEditor .CodeMirror-scrollbar {
+    [data-theme="dark"] #codeEditor .CodeMirror-scrollbar,
+    [data-theme="dark"] #codeEditorFull .CodeMirror-scrollbar {
       background: var(--bg-secondary);
     }
-    [data-theme="dark"] #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb {
+    [data-theme="dark"] #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb,
+    [data-theme="dark"] #codeEditorFull .CodeMirror-scrollbar::-webkit-scrollbar-thumb {
       background: var(--border-color);
     }
     [data-theme="dark"] #previewModal > div {
@@ -1232,7 +1236,7 @@
         border: 1px solid #30363d;
       }
     }
-    #codeEditor .CodeMirror {
+    #codeEditor .CodeMirror, #codeEditorFull .CodeMirror {
       height: 100% !important;
       min-height: 300px;
       border-radius: 12px;
@@ -1246,98 +1250,98 @@
       line-height: 1.6;
     }
     
-    #codeEditor .CodeMirror-focused {
+    #codeEditor .CodeMirror-focused, #codeEditorFull .CodeMirror-focused {
       border-color: var(--primary-light);
       box-shadow: 0 6px 30px rgba(33, 150, 243, 0.25);
       transform: translateY(-1px);
     }
     
-    #codeEditor .CodeMirror-gutters {
+    #codeEditor .CodeMirror-gutters, #codeEditorFull .CodeMirror-gutters {
       background: var(--bg-secondary);
       border-right: 1px solid var(--border-color);
       border-radius: 12px 0 0 12px;
     }
     
-    #codeEditor .CodeMirror-linenumber {
+    #codeEditor .CodeMirror-linenumber, #codeEditorFull .CodeMirror-linenumber {
       color: var(--text-secondary);
       font-size: 12px;
       padding: 0 8px;
     }
     
-    #codeEditor .CodeMirror-cursor {
+    #codeEditor .CodeMirror-cursor, #codeEditorFull .CodeMirror-cursor {
       border-left: 2px solid var(--primary-color);
     }
     
-    #codeEditor .CodeMirror-selected {
+    #codeEditor .CodeMirror-selected, #codeEditorFull .CodeMirror-selected {
       background: rgba(33, 150, 243, 0.1);
     }
-    #codeEditor .CodeMirror-scrollbar-filler, #codeEditor .CodeMirror-gutter-filler {
+    #codeEditor .CodeMirror-scrollbar-filler, #codeEditorFull .CodeMirror-scrollbar-filler, #codeEditor .CodeMirror-gutter-filler, #codeEditorFull .CodeMirror-gutter-filler {
       background: transparent;
     }
     
-    #codeEditor .CodeMirror-scrollbar {
+    #codeEditor .CodeMirror-scrollbar, #codeEditorFull .CodeMirror-scrollbar {
       background: var(--bg-secondary);
       border-radius: 8px;
     }
     
-    #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar {
+    #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar, #codeEditorFull .CodeMirror-scrollbar::-webkit-scrollbar {
       width: 12px;
       background: var(--bg-secondary);
       border-radius: 8px;
     }
     
-    #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb {
+    #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb, #codeEditorFull .CodeMirror-scrollbar::-webkit-scrollbar-thumb {
       background: var(--border-color);
       border-radius: 8px;
       border: 2px solid var(--bg-secondary);
       transition: var(--transition);
     }
     
-    #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb:hover {
+    #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb:hover, #codeEditorFull .CodeMirror-scrollbar::-webkit-scrollbar-thumb:hover {
       background: var(--text-secondary);
     }
     
-    #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-track {
+    #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-track, #codeEditorFull .CodeMirror-scrollbar::-webkit-scrollbar-track {
       background: var(--bg-secondary);
       border-radius: 8px;
     }
     @media (prefers-color-scheme: dark) {
-      #codeEditor .CodeMirror {
+      #codeEditor .CodeMirror, #codeEditorFull .CodeMirror {
         background: var(--bg-primary);
         border-color: var(--text-accent);
         color: var(--text-primary);
       }
-      #codeEditor .CodeMirror-focused {
+      #codeEditor .CodeMirror-focused, #codeEditorFull .CodeMirror-focused {
         border-color: #21CBF3;
         box-shadow: 0 6px 30px rgba(33, 203, 243, 0.3);
       }
-      #codeEditor .CodeMirror-gutters {
+      #codeEditor .CodeMirror-gutters, #codeEditorFull .CodeMirror-gutters {
         background: var(--bg-secondary);
         border-right-color: var(--border-color);
       }
-      #codeEditor .CodeMirror-linenumber {
+      #codeEditor .CodeMirror-linenumber, #codeEditorFull .CodeMirror-linenumber {
         color: var(--text-secondary);
       }
-      #codeEditor .CodeMirror-cursor {
+      #codeEditor .CodeMirror-cursor, #codeEditorFull .CodeMirror-cursor {
         border-left-color: var(--text-accent);
       }
-      #codeEditor .CodeMirror-selected {
+      #codeEditor .CodeMirror-selected, #codeEditorFull .CodeMirror-selected {
         background: rgba(88, 166, 255, 0.1);
       }
-      #codeEditor .CodeMirror-scrollbar {
+      #codeEditor .CodeMirror-scrollbar, #codeEditorFull .CodeMirror-scrollbar {
         background: var(--bg-secondary);
       }
-      #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar {
+      #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar, #codeEditorFull .CodeMirror-scrollbar::-webkit-scrollbar {
         background: var(--bg-secondary);
       }
-      #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb {
+      #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb, #codeEditorFull .CodeMirror-scrollbar::-webkit-scrollbar-thumb {
         background: var(--border-color);
         border-color: var(--bg-secondary);
       }
-      #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb:hover {
+      #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-thumb:hover, #codeEditorFull .CodeMirror-scrollbar::-webkit-scrollbar-thumb:hover {
         background: var(--text-secondary);
       }
-      #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-track {
+      #codeEditor .CodeMirror-scrollbar::-webkit-scrollbar-track, #codeEditorFull .CodeMirror-scrollbar::-webkit-scrollbar-track {
         background: var(--bg-secondary);
       }
     }
@@ -1466,6 +1470,108 @@
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
     }
+
+    /* 代码 / 文本全页视图 */
+    body.fm-code-page-open {
+      padding: 0;
+      overflow: hidden;
+    }
+    body.fm-code-page-open .container {
+      display: none;
+    }
+    .fm-code-page {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: var(--fm-workspace);
+      color: var(--text-primary);
+    }
+    .fm-code-page[hidden] {
+      display: none !important;
+    }
+    body.fm-code-page-open .fm-code-page {
+      display: flex;
+    }
+    .fm-code-page__bar {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      box-shadow: var(--shadow-light);
+      flex-wrap: wrap;
+    }
+    .fm-code-page__theme {
+      flex-shrink: 0;
+    }
+    [data-theme="dark"] .fm-code-page {
+      background: var(--fm-workspace);
+    }
+    [data-theme="dark"] .fm-code-page__bar {
+      background: var(--bg-primary);
+      border-bottom-color: var(--border-color);
+    }
+    [data-theme="dark"] .fm-code-page__back {
+      background: var(--bg-secondary);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+    .fm-code-page__back {
+      flex-shrink: 0;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .fm-code-page__back:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-dark);
+    }
+    .fm-code-page__title {
+      flex: 1 1 160px;
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+      word-break: break-all;
+      line-height: 1.35;
+      min-width: 0;
+    }
+    .fm-code-page__actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .fm-code-page__actions .edit-save-btn {
+      font-size: 0.9rem;
+      padding: 8px 16px;
+    }
+    .fm-code-page__status,
+    .fm-code-page__format-status {
+      flex-shrink: 0;
+      margin: 0 16px;
+    }
+    .fm-code-page__status:not([hidden]) {
+      display: block;
+      margin-top: 10px;
+    }
+    .fm-code-page__format-status:not([hidden]) {
+      display: block;
+      margin-top: 8px;
+    }
+    .fm-code-page__editor {
+      flex: 1 1 0;
+      min-height: 0;
+      padding: 12px 16px 16px;
+      display: flex;
+      flex-direction: column;
+    }
     
     #editorCloseBtn:hover { color: var(--error-color) !important; }
     
@@ -1512,10 +1618,30 @@
   </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.min.css">
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/fold/foldcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/fold/brace-fold.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/fold/foldgutter.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/xml/xml.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/css/css.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/clike/clike.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/jsx/jsx.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/yaml/yaml.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/markdown/markdown.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/xml/xml.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/shell/shell.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/swift/swift.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/dart/dart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/go/go.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/rust/rust.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/ruby/ruby.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/php/php.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/sql/sql.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/groovy/groovy.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/sass/sass.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/lua/lua.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/addon/fold/foldgutter.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/theme/material-darker.min.css">
 </head>
 
@@ -1558,6 +1684,22 @@
         <div class="fm-empty">加载中…</div>
       </div>
     </div>
+  </div>
+
+  <!-- 文本 / 代码全页编辑（非弹窗） -->
+  <div id="fmCodePage" class="fm-code-page" hidden aria-hidden="true">
+    <header class="fm-code-page__bar">
+      <button type="button" class="fm-code-page__back" id="fmCodeBackBtn">← 返回文件列表</button>
+      <button type="button" class="theme-toggle fm-code-page__theme" id="fmCodeThemeToggle" title="切换主题" aria-label="切换浅色或深色主题">🌙</button>
+      <h2 class="fm-code-page__title" id="fmCodePageTitle"></h2>
+      <div class="fm-code-page__actions">
+        <button type="button" id="fmCodeFormatJsonBtn" class="edit-save-btn format-btn" hidden>格式化 JSON</button>
+        <button type="button" id="fmCodeSaveBtn" class="edit-save-btn save-btn">保存</button>
+      </div>
+    </header>
+    <div id="editorJsonStatus" class="editor-status fm-code-page__status" hidden></div>
+    <div id="formatJsonStatus" class="editor-format-status fm-code-page__format-status" hidden></div>
+    <div id="codeEditorFull" class="fm-code-page__editor"></div>
   </div>
 
   <script>
@@ -2140,6 +2282,242 @@
       return wrap;
     }
 
+    const FM_TEXT_PREVIEW_MAX_BYTES = 2.5 * 1024 * 1024;
+
+    const TEXT_SPECIAL_NAMES = new Set([
+      'dockerfile', 'containerfile', 'makefile', 'gnumakefile', 'gemfile', 'rakefile', 'podfile',
+      'jenkinsfile', 'cmakelists.txt'
+    ]);
+
+    const TEXT_EXTENSIONS = new Set([
+      'txt', 'md', 'markdown', 'json', 'log', 'js', 'mjs', 'cjs', 'ts', 'tsx', 'jsx',
+      'css', 'scss', 'sass', 'less', 'html', 'htm', 'xhtml', 'vue', 'xml', 'csv', 'tsv',
+      'yaml', 'yml', 'toml', 'ini', 'cfg', 'conf', 'properties',
+      'c', 'h', 'cc', 'cpp', 'cxx', 'hpp', 'hh', 'hxx', 'm', 'mm',
+      'swift', 'java', 'kt', 'kts', 'cs', 'scala', 'sc',
+      'py', 'pyw', 'pyi', 'rb', 'rake', 'jbuilder',
+      'php', 'phtml', 'go', 'rs', 'dart',
+      'sh', 'bash', 'zsh', 'fish', 'command',
+      'sql', 'graphql', 'gql', 'proto', 'lua',
+      'gradle', 'jsp', 'plist',
+      'gitignore', 'editorconfig', 'npmrc', 'env', 'rst', 'adoc'
+    ]);
+
+    function getCmTheme() {
+      return document.documentElement.getAttribute('data-theme') === 'dark' ? 'material-darker' : 'default';
+    }
+
+    function disposeCodeMirror() {
+      if (window._cmEditor) {
+        try {
+          const wrap = window._cmEditor.getWrapperElement();
+          window._cmEditor = null;
+          if (wrap && wrap.parentNode) wrap.remove();
+        } catch (e) {
+          window._cmEditor = null;
+        }
+      }
+    }
+
+    function closeTextEditorPage() {
+      if (window._fmCodeResizeHandler) {
+        window.removeEventListener('resize', window._fmCodeResizeHandler);
+        window._fmCodeResizeHandler = null;
+      }
+      disposeCodeMirror();
+      const page = document.getElementById('fmCodePage');
+      if (page) {
+        page.hidden = true;
+        page.setAttribute('aria-hidden', 'true');
+      }
+      document.body.classList.remove('fm-code-page-open');
+      window._fmCodePagePath = null;
+      ['editorJsonStatus', 'formatJsonStatus'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.textContent = '';
+          el.hidden = true;
+        }
+      });
+      const fmtBtn = document.getElementById('fmCodeFormatJsonBtn');
+      if (fmtBtn) fmtBtn.hidden = true;
+      const host = document.getElementById('codeEditorFull');
+      if (host) host.innerHTML = '';
+    }
+
+    function codeMirrorModeFromFileName(fileName) {
+      const baseRaw = (fileName.split('/').pop() || fileName).toLowerCase();
+      const base = baseRaw.split('?')[0];
+      if (base.endsWith('.json')) return { name: 'javascript', json: true };
+      if (base.endsWith('.md') || base.endsWith('.markdown')) return 'markdown';
+      if (base.endsWith('.yaml') || base.endsWith('.yml')) return 'yaml';
+      if (base.endsWith('.graphql') || base.endsWith('.gql')) return 'javascript';
+      if (base.endsWith('.vue') || base.endsWith('.html') || base.endsWith('.htm')) return 'htmlmixed';
+      if (base.endsWith('.xml') || base.endsWith('.xhtml')) return 'xml';
+      if (base.endsWith('.scss') || base.endsWith('.sass')) return 'sass';
+      if (base.endsWith('.css') || base.endsWith('.less')) return 'css';
+      if (base.endsWith('.gradle')) return 'groovy';
+      if (TEXT_SPECIAL_NAMES.has(base)) return 'shell';
+      const dot = base.lastIndexOf('.');
+      const ext = dot >= 0 ? base.slice(dot + 1) : '';
+      if (ext === 'ts') return { name: 'javascript', typescript: true };
+      if (ext === 'tsx') return { name: 'jsx', typescript: true };
+      if (ext === 'jsx') return 'jsx';
+      if (ext === 'js' || ext === 'mjs' || ext === 'cjs') return 'javascript';
+      if (ext === 'py' || ext === 'pyw' || ext === 'pyi') return 'python';
+      if (ext === 'rb' || ext === 'rake' || ext === 'jbuilder') return 'ruby';
+      if (ext === 'php' || ext === 'phtml') return 'php';
+      if (ext === 'go') return 'go';
+      if (ext === 'rs') return 'rust';
+      if (ext === 'swift') return 'swift';
+      if (ext === 'dart') return 'dart';
+      if (ext === 'java' || ext === 'jsp') return 'text/x-java';
+      if (ext === 'kt' || ext === 'kts') return 'text/x-kotlin';
+      if (ext === 'cs') return 'text/x-csharp';
+      if (ext === 'scala' || ext === 'sc') return 'text/x-scala';
+      if (ext === 'c' || ext === 'h') return 'text/x-csrc';
+      if (ext === 'cc' || ext === 'cpp' || ext === 'cxx' || ext === 'hpp' || ext === 'hh' || ext === 'hxx') return 'text/x-c++src';
+      if (ext === 'm' || ext === 'mm') return 'text/x-objectivec';
+      if (ext === 'sh' || ext === 'bash' || ext === 'zsh' || ext === 'fish' || ext === 'command') return 'shell';
+      if (ext === 'sql') return 'text/x-sql';
+      if (ext === 'lua') return 'lua';
+      if (ext === 'plist') return 'xml';
+      return 'text/plain';
+    }
+
+    async function openTextEditorPage(filePath, fileName) {
+      if (window._fmCodeResizeHandler) {
+        window.removeEventListener('resize', window._fmCodeResizeHandler);
+        window._fmCodeResizeHandler = null;
+      }
+      disposeCodeMirror();
+      const host = document.getElementById('codeEditorFull');
+      if (!host) return;
+      host.innerHTML = '';
+
+      let resp;
+      try {
+        resp = await fetch('/download?file=' + encodeURIComponent(filePath));
+      } catch (e) {
+        showStatus('加载失败: ' + (e.message || String(e)), 'error');
+        hideStatus(5000);
+        return;
+      }
+      if (!resp.ok) {
+        showStatus('无法打开文件 (' + resp.status + ')', 'error');
+        hideStatus(5000);
+        return;
+      }
+      const clen = resp.headers.get('Content-Length');
+      if (clen && Number(clen) > FM_TEXT_PREVIEW_MAX_BYTES) {
+        showStatus('文件过大（约 ' + (Number(clen) / 1024 / 1024).toFixed(1) + ' MB），请下载后在本地查看', 'error');
+        hideStatus(6000);
+        return;
+      }
+      const text = await resp.text();
+      if (text.length > FM_TEXT_PREVIEW_MAX_BYTES) {
+        showStatus('文件过大，请下载后在本地查看', 'error');
+        hideStatus(6000);
+        return;
+      }
+
+      const page = document.getElementById('fmCodePage');
+      const titleEl = document.getElementById('fmCodePageTitle');
+      if (titleEl) titleEl.textContent = fileName;
+      if (page) {
+        page.hidden = false;
+        page.setAttribute('aria-hidden', 'false');
+      }
+      document.body.classList.add('fm-code-page-open');
+      window._fmCodePagePath = filePath;
+
+      const isJson = fileName.toLowerCase().endsWith('.json');
+      const fmtBtn = document.getElementById('fmCodeFormatJsonBtn');
+      if (fmtBtn) fmtBtn.hidden = !isJson;
+      const je = document.getElementById('editorJsonStatus');
+      const fj = document.getElementById('formatJsonStatus');
+      if (je) {
+        je.hidden = !isJson;
+        je.textContent = '';
+      }
+      if (fj) {
+        fj.hidden = !isJson;
+        fj.textContent = '';
+      }
+
+      const mode = codeMirrorModeFromFileName(fileName);
+      window._cmEditor = CodeMirror(host, {
+        value: text,
+        mode: mode,
+        theme: getCmTheme(),
+        lineNumbers: true,
+        tabSize: 2,
+        autofocus: true,
+        lineWrapping: true,
+        indentUnit: 2,
+        smartIndent: true,
+        electricChars: true,
+        autoCloseBrackets: true,
+        matchBrackets: true,
+        foldGutter: true,
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        extraKeys: {
+          'Ctrl-S': function () { if (window._fmCodePagePath) saveTextFile(window._fmCodePagePath); },
+          'Cmd-S': function () { if (window._fmCodePagePath) saveTextFile(window._fmCodePagePath); },
+          'Ctrl-/': 'toggleComment',
+          'Cmd-/': 'toggleComment',
+          'Ctrl-Z': 'undo',
+          'Cmd-Z': 'undo',
+          'Ctrl-Y': 'redo',
+          'Cmd-Y': 'redo',
+          'Ctrl-F': 'findPersistent',
+          'Cmd-F': 'findPersistent',
+          'Ctrl-G': 'findNext',
+          'Cmd-G': 'findNext',
+          'Shift-Ctrl-G': 'findPrev',
+          'Shift-Cmd-G': 'findPrev',
+          'Esc': function () { closeTextEditorPage(); }
+        }
+      });
+
+      function sizeEditor() {
+        if (!window._cmEditor || !host) return;
+        const h = Math.max(240, host.clientHeight - 4);
+        window._cmEditor.setSize(null, h);
+        window._cmEditor.refresh();
+      }
+
+      requestAnimationFrame(function () {
+        sizeEditor();
+        window._cmEditor.focus();
+      });
+      window._fmCodeResizeHandler = sizeEditor;
+      window.addEventListener('resize', sizeEditor);
+
+      const fmT = document.getElementById('fmCodeThemeToggle');
+      const mainT = document.getElementById('themeToggle');
+      if (fmT && mainT) {
+        fmT.textContent = mainT.textContent;
+        fmT.title = mainT.title;
+      }
+    }
+
+    function getFileType(name) {
+      const leaf = name.includes('/') ? name.split('/').pop() : name;
+      const lower = (leaf || '').toLowerCase();
+      const base = lower.split('?')[0];
+      if (TEXT_SPECIAL_NAMES.has(base)) return 'text';
+      if (base.endsWith('.gradle')) return 'text';
+
+      const ext = base.includes('.') ? base.slice(base.lastIndexOf('.') + 1) : '';
+      if (TEXT_EXTENSIONS.has(ext)) return 'text';
+      if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'].includes(ext)) return 'image';
+      if (ext === 'pdf') return 'pdf';
+      if (['mp3', 'wav', 'ogg', 'aac', 'm4a'].includes(ext)) return 'audio';
+      if (['mp4', 'webm', 'mov', 'avi', 'mkv'].includes(ext)) return 'video';
+      return 'other';
+    }
+
     // 预览弹窗
     function showPreviewModal(contentHtml) {
       let modal = document.getElementById('previewModal');
@@ -2164,17 +2542,6 @@
       modal.style.display = 'flex';
     }
 
-    // 文件类型判断
-    function getFileType(name) {
-      const ext = name.split('.').pop().toLowerCase();
-      if (["jpg","jpeg","png","gif","webp","bmp","svg"].includes(ext)) return 'image';
-      if (["txt","md","json","log","js","css","html","xml","csv","yaml","yml"].includes(ext)) return 'text';
-      if (["pdf"].includes(ext)) return 'pdf';
-      if (["mp3","wav","ogg","aac","m4a"].includes(ext)) return 'audio';
-      if (["mp4","webm","mov","avi","mkv"].includes(ext)) return 'video';
-      return 'other';
-    }
-
     // 预览文件
     async function previewFile(filePath, fileName) {
       const type = getFileType(fileName);
@@ -2186,67 +2553,7 @@
           </div>
         `);
       } else if (type === 'text') {
-        const resp = await fetch('/download?file=' + encodeURIComponent(filePath));
-        const text = await resp.text();
-        const isJson = fileName.endsWith('.json');
-        showPreviewModal(`
-  <div class="editor-modal">
-    <div class="editor-header">
-      <div class="editor-title">
-        <span class="editor-icon">📝</span>
-        <span>编辑文件：${fileName}</span>
-      </div>
-      <button id="editorCloseBtn" class="editor-close-btn" onclick="document.getElementById('previewModal').style.display='none'" title="关闭编辑器">×</button>
-    </div>
-    ${isJson ? '<div id="editorJsonStatus" class="editor-status"></div>' : ''}
-    <div id="codeEditor" class="editor-container"></div>
-    ${isJson ? '<div id="formatJsonStatus" class="editor-format-status"></div>' : ''}
-    <div class="editor-footer">
-      ${isJson ? '<button class="edit-save-btn format-btn" onclick="formatJsonInEditor()">🧹 格式化 JSON</button>' : ''}
-      <button class="edit-save-btn save-btn" onclick="saveTextFile('${filePath.replace(/'/g, "\\'")}')">💾 保存文件</button>
-    </div>
-  </div>
-`);
-        let mode = 'text/plain';
-        if (fileName.endsWith('.json')) mode = {name: 'javascript', json: true};
-        else if (fileName.endsWith('.yaml') || fileName.endsWith('.yml')) mode = 'yaml';
-        else if (fileName.endsWith('.md')) mode = 'markdown';
-        window._cmEditor = CodeMirror(document.getElementById('codeEditor'), {
-          value: text,
-          mode: mode,
-          theme: 'material-darker',
-          lineNumbers: true,
-          tabSize: 2,
-          autofocus: true,
-          lineWrapping: true,
-          indentUnit: 2,
-          smartIndent: true,
-          electricChars: true,
-          autoCloseBrackets: true,
-          matchBrackets: true,
-          foldGutter: true,
-          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-          extraKeys: {
-            'Ctrl-S': function(cm) {
-              saveTextFile(filePath);
-            },
-            'Cmd-S': function(cm) {
-              saveTextFile(filePath);
-            },
-            'Ctrl-/': 'toggleComment',
-            'Cmd-/': 'toggleComment',
-            'Ctrl-Z': 'undo',
-            'Cmd-Z': 'undo',
-            'Ctrl-Y': 'redo',
-            'Cmd-Y': 'redo',
-            'Ctrl-F': 'findPersistent',
-            'Cmd-F': 'findPersistent',
-            'Ctrl-G': 'findNext',
-            'Cmd-G': 'findNext',
-            'Shift-Ctrl-G': 'findPrev',
-            'Shift-Cmd-G': 'findPrev'
-          }
-        });
+        await openTextEditorPage(filePath, fileName);
       } else if (type === 'pdf') {
         showPreviewModal(`
           <div class="preview-container">
@@ -2294,7 +2601,12 @@
         if (resp.ok) {
           showStatus('✅ 保存成功', 'success');
           hideStatus(3000); // 3秒后自动隐藏
-          document.getElementById('previewModal').style.display = 'none';
+          if (document.body.classList.contains('fm-code-page-open')) {
+            closeTextEditorPage();
+          } else {
+            const pm = document.getElementById('previewModal');
+            if (pm) pm.style.display = 'none';
+          }
           loadFiles();
         } else {
           showStatus('❌ 保存失败', 'error');
@@ -2378,6 +2690,11 @@
           themeToggle.textContent = '🌙';
           themeToggle.title = '切换到深色模式';
         }
+        if (window._cmEditor) {
+          try {
+            window._cmEditor.setOption('theme', getCmTheme());
+          } catch (e) {}
+        }
       }
       
       themeToggle.addEventListener('click', () => {
@@ -2398,6 +2715,25 @@
       const vGrid = document.getElementById('fmViewGrid');
       if (vList) vList.addEventListener('click', () => window.setFmViewMode('list'));
       if (vGrid) vGrid.addEventListener('click', () => window.setFmViewMode('grid'));
+      const fmBack = document.getElementById('fmCodeBackBtn');
+      const fmSave = document.getElementById('fmCodeSaveBtn');
+      const fmFmt = document.getElementById('fmCodeFormatJsonBtn');
+      if (fmBack) fmBack.addEventListener('click', closeTextEditorPage);
+      if (fmSave) fmSave.addEventListener('click', () => { if (window._fmCodePagePath) saveTextFile(window._fmCodePagePath); });
+      if (fmFmt) fmFmt.addEventListener('click', () => window.formatJsonInEditor());
+      const fmCodeTheme = document.getElementById('fmCodeThemeToggle');
+      const themeMain = document.getElementById('themeToggle');
+      if (fmCodeTheme && themeMain) {
+        const syncCodeThemeBtn = () => {
+          fmCodeTheme.textContent = themeMain.textContent;
+          fmCodeTheme.title = themeMain.title;
+        };
+        syncCodeThemeBtn();
+        fmCodeTheme.addEventListener('click', () => {
+          themeMain.click();
+          syncCodeThemeBtn();
+        });
+      }
       loadFiles();
       
       // 添加键盘快捷键支持
