@@ -9,7 +9,8 @@ Future<void> handleFileList(HttpRequest request, String sharedDir) async {
   try {
     final dirParam = request.uri.queryParameters['dir'] ?? '';
     final dir = Directory(path.join(sharedDir, dirParam));
-    final files = await _getFileListRecursively(dir);
+    // 仅列出一层（与网页 /files?dir= 及 App 列表一致）；避免整棵子树递归带来的巨量 JSON 与磁盘遍历。
+    final files = await _getFileListShallow(dir);
     await sendJsonResponse(request, {'files': files});
   } catch (e) {
     logError('Error getting file list: $e');
@@ -34,39 +35,46 @@ Future<void> handleSaveTextFile(HttpRequest request, String sharedDir) async {
   }
 }
 
-Future<List<Map<String, dynamic>>> _getFileListRecursively(Directory dir) async {
+Future<List<Map<String, dynamic>>> _getFileListShallow(Directory dir) async {
   if (!await dir.exists()) {
     return [];
   }
-  final List<Map<String, dynamic>> entries = [];
+  final entities = <FileSystemEntity>[];
   await for (final entity in dir.list(followLinks: false)) {
+    entities.add(entity);
+  }
+  final entries = await Future.wait(entities.map((entity) async {
     final stat = await entity.stat();
     final name = path.basename(entity.path);
     if (entity is File) {
-      entries.add({
+      return {
         'name': name,
         'type': 'file',
         'size': stat.size,
         'modified': stat.modified.toIso8601String(),
         'sizeFormatted': formatBytes(stat.size),
-      });
-    } else if (entity is Directory) {
-      entries.add({
+      };
+    }
+    if (entity is Directory) {
+      return {
         'name': name,
         'type': 'folder',
-        'children': await _getFileListRecursively(entity),
-      });
+        'modified': stat.modified.toIso8601String(),
+      };
     }
-  }
-  // 文件夹和文件分别排序，文件夹在前，文件按修改时间降序
-  entries.sort((a, b) {
+    return null;
+  }));
+
+  final list = entries.whereType<Map<String, dynamic>>().toList();
+
+  list.sort((a, b) {
     if (a['type'] != b['type']) {
       return a['type'] == 'folder' ? -1 : 1;
     }
     if (a['type'] == 'file' && b['type'] == 'file') {
-      return DateTime.parse(b['modified']).compareTo(DateTime.parse(a['modified']));
+      return DateTime.parse(b['modified'] as String).compareTo(DateTime.parse(a['modified'] as String));
     }
-    return a['name'].compareTo(b['name']);
+    return (a['name'] as String).compareTo(b['name'] as String);
   });
-  return entries;
+  return list;
 }

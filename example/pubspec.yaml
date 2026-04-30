@@ -38,6 +38,8 @@ dependencies:
   lan_web_server:
     path: ../
   path_provider: ^2.1.5
+  file_picker: ^8.3.7
+  shared_preferences: ^2.3.5
   qr_flutter: ^4.1.0
   url_launcher: ^6.3.2
 
@@ -45,12 +47,20 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_launcher_icons: ^0.14.4
+
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+
+flutter_launcher_icons:
+  image_path: assets/branding/app_icon.png
+  ios: true
+  macos:
+    generate: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

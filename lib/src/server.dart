@@ -17,7 +17,7 @@ enum WebServerState { stopped, starting, running, stopping, error }
 class WebServerService {
   HttpServer? _server;
   final int port;
-  final String sharedDir;
+  String _sharedDir;
 
   final _stateController = StreamController<WebServerState>.broadcast();
   final _logController = StreamController<String>.broadcast();
@@ -30,21 +30,28 @@ class WebServerService {
   WebServerState _state = WebServerState.stopped;
   WebServerState get state => _state;
 
-  String get uploadDir => sharedDir;
-  String get downloadDir => sharedDir;
-  String get sharedDirectory => sharedDir;
+  String get sharedDir => _sharedDir;
+  String get uploadDir => _sharedDir;
+  String get downloadDir => _sharedDir;
+  String get sharedDirectory => _sharedDir;
 
-  WebServerService({required this.port, required this.sharedDir}) {
+  WebServerService({required this.port, required String sharedDir}) : _sharedDir = sharedDir {
     _ensureDirectoryExists();
+  }
+
+  /// 切换共享根目录（若服务已在运行，后续请求将使用新目录）。
+  Future<void> setSharedDirectory(String newDirectory) async {
+    _sharedDir = newDirectory;
+    await _ensureDirectoryExists();
   }
 
   /// 确保目录存在
   Future<void> _ensureDirectoryExists() async {
     try {
-      final dir = Directory(sharedDir);
+      final dir = Directory(_sharedDir);
       if (!await dir.exists()) {
         await dir.create(recursive: true);
-        _log('Created shared directory: $sharedDir');
+        _log('Created shared directory: $_sharedDir');
       }
     } catch (e) {
       _log('Error creating directory: $e');
@@ -108,20 +115,20 @@ class WebServerService {
           await _handleHomePage(request);
           break;
         case '/upload':
-          await handleUpload(request, sharedDir);
+          await handleUpload(request, _sharedDir);
           break;
         case '/download':
-          await handleDownload(request, sharedDir);
+          await handleDownload(request, _sharedDir);
           break;
         case '/files':
-          await handleFileList(request, sharedDir);
+          await handleFileList(request, _sharedDir);
           break;
         case '/delete':
-          await handleDelete(request, sharedDir);
+          await handleDelete(request, _sharedDir);
           break;
         case '/save':
           if (request.method == 'POST') {
-            await handleSaveTextFile(request, sharedDir);
+            await handleSaveTextFile(request, _sharedDir);
           } else {
             await sendErrorResponse(request, 405, 'Method Not Allowed');
           }
@@ -143,7 +150,7 @@ class WebServerService {
 
   /// 处理静态文件
   Future<void> _handleFile(HttpRequest request) async {
-    final filePath = path.join(sharedDir, request.uri.path.substring(1));
+    final filePath = path.join(_sharedDir, request.uri.path.substring(1));
     final file = File(filePath);
 
     if (!await file.exists()) {

@@ -7,6 +7,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lan_web_server/lan_web_server.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -20,6 +22,8 @@ class WebServerPage extends StatefulWidget {
 }
 
 class _WebServerPageState extends State<WebServerPage> {
+  static const _prefsSharedDirKey = 'lan_web_server.shared_dir';
+
   late final WebServerService _webServer;
 
   bool _isWebServerRunning = false;
@@ -47,8 +51,7 @@ class _WebServerPageState extends State<WebServerPage> {
       // Get all local IPv4 addresses
       _localIps = await _getAllLocalIps();
       _selectedIp = _localIps.isNotEmpty ? _localIps.first : '127.0.0.1';
-      // Get default shared directory
-      _sharedDir = await _getDefaultSharedDir();
+      _sharedDir = await _resolveInitialSharedDir();
       // Create WebServerService
       _webServer = WebServerService(port: _webServerPort, sharedDir: _sharedDir);
       _stateSubscription = _webServer.onStateChanged.listen((state) {
@@ -66,6 +69,7 @@ class _WebServerPageState extends State<WebServerPage> {
           _loadFiles();
         }
       });
+      if (mounted) setState(() {});
     } catch (e) {
       setState(() {
         _errorMessage = 'Initialization failed: $e';
@@ -126,14 +130,29 @@ class _WebServerPageState extends State<WebServerPage> {
   }
 
   Future<String> _getDefaultSharedDir() async {
-    // if (Platform.isAndroid || Platform.isIOS) {
-    //   final dir = await getApplicationDocumentsDirectory();
-    //   await Directory('${dir.parent.path}/LANFileTransfer/test').create(recursive: true);
-    //   return dir.parent.path;
-    // } else {
-      final dir = await getApplicationDocumentsDirectory();
-      return '${dir.path}/LANFileTransfer/shared';
-    // }
+    final dir = await getApplicationDocumentsDirectory();
+    return '${dir.path}/LANWebServer/shared';
+  }
+
+  /// 桌面端：上次选择的目录若仍存在则沿用，否则默认路径。
+  Future<String> _resolveInitialSharedDir() async {
+    final fallback = await _getDefaultSharedDir();
+    if (!_canPickSharedFolder) return fallback;
+
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getString(_prefsSharedDirKey);
+    if (saved == null || saved.isEmpty) return fallback;
+
+    if (await Directory(saved).exists()) return saved;
+
+    await prefs.remove(_prefsSharedDirKey);
+    return fallback;
+  }
+
+  Future<void> _persistSharedDir(String dirPath) async {
+    if (!_canPickSharedFolder) return;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_prefsSharedDirKey, dirPath);
   }
 
   void _copyToClipboard(String text) {
@@ -144,6 +163,38 @@ class _WebServerPageState extends State<WebServerPage> {
       );
     } catch (e) {
       debugPrint('Error copying to clipboard: $e');
+    }
+  }
+
+  bool get _canPickSharedFolder =>
+      Platform.isMacOS || Platform.isWindows || Platform.isLinux;
+
+  Future<void> _pickSharedFolder() async {
+    if (!_canPickSharedFolder) return;
+    setState(() => _isOperating = true);
+    try {
+      final picked = await FilePicker.platform.getDirectoryPath();
+      if (picked == null || !mounted) return;
+      await _webServer.setSharedDirectory(picked);
+      await _persistSharedDir(picked);
+      setState(() {
+        _sharedDir = _webServer.sharedDir;
+        _errorMessage = null;
+      });
+      if (_isWebServerRunning) await _loadFiles();
+    } on MissingPluginException catch (e) {
+      setState(() {
+        _errorMessage =
+            'File picker plugin not linked. In example/macos run: '
+            'flutter pub get && pod install, then fully rebuild the app '
+            '(hot reload is not enough). ${e.message}';
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Failed to set shared folder: $e';
+      });
+    } finally {
+      if (mounted) setState(() => _isOperating = false);
     }
   }
 
@@ -278,6 +329,9 @@ class _WebServerPageState extends State<WebServerPage> {
                 onIpChanged: (ip) => setState(() => _selectedIp = ip),
                 port: _webServerPort,
                 sharedDir: _sharedDir,
+                showPickSharedFolder: _canPickSharedFolder,
+                onPickSharedFolder: _pickSharedFolder,
+                pickSharedFolderEnabled: !_isOperating,
                 errorMessage: _errorMessage,
                 onCopy: _copyToClipboard,
               ),
@@ -358,6 +412,9 @@ class _StatusCard extends StatelessWidget {
   final ValueChanged<String?> onIpChanged;
   final int port;
   final String sharedDir;
+  final bool showPickSharedFolder;
+  final VoidCallback onPickSharedFolder;
+  final bool pickSharedFolderEnabled;
   final String? errorMessage;
   final void Function(String) onCopy;
   const _StatusCard({
@@ -367,6 +424,9 @@ class _StatusCard extends StatelessWidget {
     required this.onIpChanged,
     required this.port,
     required this.sharedDir,
+    required this.showPickSharedFolder,
+    required this.onPickSharedFolder,
+    required this.pickSharedFolderEnabled,
     required this.errorMessage,
     required this.onCopy,
   });
@@ -409,6 +469,24 @@ class _StatusCard extends StatelessWidget {
                 ],
               ),
             ],
+            const SizedBox(height: 8),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    'Shared folder:\n$sharedDir',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+                if (showPickSharedFolder)
+                  IconButton(
+                    icon: const Icon(Icons.folder_open),
+                    tooltip: 'Choose shared folder',
+                    onPressed: pickSharedFolderEnabled ? onPickSharedFolder : null,
+                  ),
+              ],
+            ),
             if (isRunning) ...[
               const SizedBox(height: 4),
               Text('Web Port: $port'),
@@ -431,8 +509,6 @@ class _StatusCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
-              Text('Shared Dir: $sharedDir'),
             ],
             if (errorMessage != null) ...[
               const SizedBox(height: 8),
@@ -540,7 +616,7 @@ class _FeatureCard extends StatelessWidget {
             const Text('• Start the web server, access from other devices via browser'),
             const Text('• Supports file upload, download, and delete'),
             const Text('• Unified shared directory management'),
-            const Text('• Uses sandbox dir on mobile, documents dir on desktop'),
+            const Text('• Uses sandbox dir on mobile; desktop can choose a shared folder'),
             const Text('• Recommended for use in local network only'),
           ],
         ),
