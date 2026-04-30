@@ -23,6 +23,8 @@ class WebServerPage extends StatefulWidget {
 
 class _WebServerPageState extends State<WebServerPage> {
   static const _prefsSharedDirKey = 'lan_web_server.shared_dir';
+  static const _prefsMacBookmarkKey = 'lan_web_server.macos_dir_bookmark';
+  static const _macScopedChannel = MethodChannel('lan_web_server/security_scoped_directory');
 
   late final WebServerService _webServer;
 
@@ -134,25 +136,49 @@ class _WebServerPageState extends State<WebServerPage> {
     return '${dir.path}/LANWebServer/shared';
   }
 
-  /// 桌面端：上次选择的目录若仍存在则沿用，否则默认路径。
+  /// 桌面端：优先用 macOS security-scoped bookmark 恢复访问；否则再用保存的路径。
   Future<String> _resolveInitialSharedDir() async {
     final fallback = await _getDefaultSharedDir();
     if (!_canPickSharedFolder) return fallback;
 
     final prefs = await SharedPreferences.getInstance();
+
+    if (Platform.isMacOS) {
+      final bookmark = prefs.getString(_prefsMacBookmarkKey);
+      if (bookmark != null && bookmark.isNotEmpty) {
+        try {
+          final path = await _macScopedChannel.invokeMethod<String>('restoreBookmark', bookmark);
+          if (path != null && path.isNotEmpty && await Directory(path).exists()) {
+            return path;
+          }
+        } on PlatformException catch (e) {
+          debugPrint('restoreBookmark failed: ${e.message}');
+        }
+        await prefs.remove(_prefsMacBookmarkKey);
+      }
+    }
+
     final saved = prefs.getString(_prefsSharedDirKey);
     if (saved == null || saved.isEmpty) return fallback;
 
     if (await Directory(saved).exists()) return saved;
 
     await prefs.remove(_prefsSharedDirKey);
+    if (Platform.isMacOS) await prefs.remove(_prefsMacBookmarkKey);
     return fallback;
   }
 
-  Future<void> _persistSharedDir(String dirPath) async {
+  Future<void> _persistSharedDir(String dirPath, {String? macosBookmark}) async {
     if (!_canPickSharedFolder) return;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_prefsSharedDirKey, dirPath);
+    if (Platform.isMacOS) {
+      if (macosBookmark != null && macosBookmark.isNotEmpty) {
+        await prefs.setString(_prefsMacBookmarkKey, macosBookmark);
+      } else {
+        await prefs.remove(_prefsMacBookmarkKey);
+      }
+    }
   }
 
   void _copyToClipboard(String text) {
@@ -173,10 +199,25 @@ class _WebServerPageState extends State<WebServerPage> {
     if (!_canPickSharedFolder) return;
     setState(() => _isOperating = true);
     try {
-      final picked = await FilePicker.platform.getDirectoryPath();
-      if (picked == null || !mounted) return;
+      String? picked;
+      String? macBookmark;
+      if (Platform.isMacOS) {
+        final raw = await _macScopedChannel.invokeMethod<dynamic>('pickDirectory');
+        if (raw == null || !mounted) return;
+        if (raw is Map) {
+          picked = raw['path'] as String?;
+          final bm = raw['bookmark'];
+          if (bm is String && bm.isNotEmpty) {
+            macBookmark = bm;
+          }
+        }
+      } else {
+        picked = await FilePicker.platform.getDirectoryPath();
+      }
+      if (picked == null || picked.isEmpty || !mounted) return;
+
       await _webServer.setSharedDirectory(picked);
-      await _persistSharedDir(picked);
+      await _persistSharedDir(picked, macosBookmark: macBookmark);
       setState(() {
         _sharedDir = _webServer.sharedDir;
         _errorMessage = null;
@@ -188,6 +229,10 @@ class _WebServerPageState extends State<WebServerPage> {
             'File picker plugin not linked. In example/macos run: '
             'flutter pub get && pod install, then fully rebuild the app '
             '(hot reload is not enough). ${e.message}';
+      });
+    } on PlatformException catch (e) {
+      setState(() {
+        _errorMessage = e.message ?? 'Failed to pick folder: ${e.code}';
       });
     } catch (e) {
       setState(() {

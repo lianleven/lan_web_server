@@ -10,6 +10,10 @@ class MainFlutterWindow: NSWindow {
 
     RegisterGeneratedPlugins(registry: flutterViewController)
 
+    if let registrar = flutterViewController.registrar(forPlugin: "SecurityScopedDirectoryPlugin") {
+      SecurityScopedDirectoryPlugin.register(with: registrar)
+    }
+
     super.awakeFromNib()
   }
 }

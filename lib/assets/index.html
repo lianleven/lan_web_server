@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="局域网文件传输工具，支持文件上传、下载、预览和管理" />
   <meta name="keywords" content="文件传输,局域网,文件共享,文件管理" />
-  <title>LAN 文件传输</title>
+  <title>LAN 共享 · 局域网文件</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📁</text></svg>">
   <style>
     * { 
@@ -30,26 +30,27 @@
       --shadow-medium: 0 4px 16px rgba(0,0,0,0.15);
       --border-radius: 8px;
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --fm-workspace: #e8eaed;
+      --fm-toolbar-bg: #f8f9fa;
     }
     
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 20px;
+      background: var(--fm-workspace);
+      padding: 16px;
       min-height: 100vh;
-      line-height: 1.6;
+      line-height: 1.5;
       color: var(--text-primary);
     }
     .container {
-      max-width: 1000px;
+      max-width: 1100px;
       margin: 0 auto;
       background: var(--bg-primary);
-      border-radius: 16px;
-      box-shadow: var(--shadow-medium);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06);
       overflow: hidden;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      animation: slideUp 0.6s ease-out;
+      border: 1px solid var(--border-color);
+      animation: slideUp 0.4s ease-out;
     }
     
     @keyframes slideUp {
@@ -63,108 +64,136 @@
       }
     }
     .header {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-      color: white;
-      padding: 32px 24px 24px 24px;
-      text-align: center;
-      border-radius: 16px 16px 0 0;
-      box-shadow: var(--shadow-light);
-      position: relative;
-      overflow: hidden;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
     }
-    
-    .header::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 100%);
-      pointer-events: none;
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+    }
+    .header-brand-icon {
+      font-size: 1.75rem;
+      line-height: 1;
+    }
+    .header h1 {
+      font-size: 1.15rem;
+      margin: 0;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+    .header p {
+      font-size: 0.8rem;
+      margin: 2px 0 0 0;
+      color: var(--text-secondary);
+      font-weight: 400;
     }
     .theme-toggle {
-      position: absolute;
-      top: 24px;
-      right: 24px;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 50%;
-      width: 44px;
-      height: 44px;
+      flex-shrink: 0;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      width: 42px;
+      height: 42px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.3em;
+      font-size: 1.2em;
       transition: var(--transition);
-      backdrop-filter: blur(10px);
-      z-index: 10;
     }
     .theme-toggle:hover {
-      background: rgba(255,255,255,0.25);
-      transform: scale(1.1);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    .theme-toggle:active {
-      transform: scale(0.95);
-    }
-    .header h1 {
-      font-size: 2.4em;
-      margin-bottom: 12px;
-      letter-spacing: 0.5px;
-      font-weight: 700;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      position: relative;
-      z-index: 1;
-    }
-    
-    .header p {
-      font-size: 1.1em;
-      opacity: 0.9;
-      font-weight: 300;
-      position: relative;
-      z-index: 1;
+      background: var(--bg-primary);
+      border-color: var(--primary-color);
     }
     .content {
-      padding: 32px 28px 28px 28px;
+      padding: 0;
     }
-    
-    #breadcrumb {
-      margin-bottom: 24px;
-      font-size: 1.1em;
-      color: var(--primary-color);
-      user-select: none;
-      background: rgba(33, 150, 243, 0.05);
+
+    .fm-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
       padding: 12px 16px;
-      border-radius: var(--border-radius);
-      border-left: 4px solid var(--primary-color);
-      font-weight: 500;
+      background: var(--fm-toolbar-bg);
+      border-bottom: 1px solid var(--border-color);
     }
-    #breadcrumb span {
+    .fm-toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .fm-count {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .fm-tool-btn {
+      font-size: 0.8125rem;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
       cursor: pointer;
-      color: var(--primary-color);
+      font-weight: 500;
       transition: var(--transition);
-      padding: 4px 8px;
-      border-radius: 4px;
-      display: inline-block;
     }
-    #breadcrumb span:hover {
-      background: rgba(33, 150, 243, 0.1);
+    .fm-tool-btn:hover {
+      border-color: var(--primary-color);
       color: var(--primary-dark);
-      transform: translateY(-1px);
     }
-    #breadcrumb span.active {
+
+    #breadcrumb {
+      margin: 0;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      user-select: none;
+      font-weight: 500;
+      flex: 1;
+      min-width: 0;
+    }
+    #breadcrumb span.fm-crumb {
+      cursor: pointer;
+      color: var(--primary-dark);
+      transition: color 0.15s;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    #breadcrumb span.fm-crumb:hover {
+      background: rgba(33, 150, 243, 0.12);
+    }
+    #breadcrumb span.fm-crumb-active {
       color: var(--text-primary);
       font-weight: 600;
       cursor: default;
-      background: rgba(0,0,0,0.05);
+    }
+    #breadcrumb span.fm-crumb-active:hover {
+      background: transparent;
     }
     #breadcrumb .sep {
       color: var(--text-secondary);
-      margin: 0 8px;
-      font-weight: 600;
-      opacity: 0.6;
+      margin: 0 6px;
+      font-weight: 400;
+      opacity: 0.7;
+      user-select: none;
+    }
+
+    .fm-upload-wrap {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-primary);
     }
     .section {
       margin-bottom: 28px;
@@ -199,82 +228,111 @@
       box-shadow: var(--shadow-medium);
     }
     .upload-area {
-      border: 3px dashed var(--primary-color);
-      padding: 56px 24px;
+      border: 2px dashed var(--border-color);
+      padding: 18px 20px;
       text-align: center;
       cursor: pointer;
-      border-radius: 12px;
-      background: linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(33, 203, 243, 0.05) 100%);
-      transition: var(--transition);
-      font-size: 1.2em;
-      margin-bottom: 16px;
+      border-radius: 10px;
+      background: var(--bg-secondary);
+      transition: border-color 0.2s, background 0.2s;
+      font-size: 0.9rem;
       position: relative;
       font-weight: 500;
       color: var(--text-primary);
     }
     
-    .upload-area::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 203, 243, 0.1) 100%);
-      opacity: 0;
-      transition: var(--transition);
-      border-radius: 12px;
-    }
-    
     .upload-area:hover {
-      border-color: var(--primary-light);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-medium);
-    }
-    
-    .upload-area:hover::before {
-      opacity: 1;
+      border-color: var(--primary-color);
+      background: rgba(33, 150, 243, 0.06);
     }
     
     .upload-area.dragover {
       border-color: var(--primary-light);
-      background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 203, 243, 0.1) 100%);
-      transform: scale(1.02);
-      box-shadow: 0 8px 24px rgba(33, 150, 243, 0.2);
+      background: rgba(33, 150, 243, 0.1);
     }
     .upload-area .icon {
-      font-size: 2.8em;
-      margin-bottom: 16px;
+      font-size: 1.75rem;
+      margin-bottom: 8px;
       display: block;
       position: relative;
       z-index: 1;
-      animation: bounce 2s infinite;
-    }
-    
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-      }
-      40% {
-        transform: translateY(-10px);
-      }
-      60% {
-        transform: translateY(-5px);
-      }
     }
     .file-list {
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
+      border: none;
+      border-radius: 0;
       background: var(--bg-primary);
-      min-height: 100px;
-      box-shadow: var(--shadow-light);
-      padding: 0;
-      overflow: hidden;
-      transition: var(--transition);
+      min-height: 120px;
+      padding: 0 0 16px 0;
+      overflow: auto;
     }
-    
-    .file-list:hover {
-      box-shadow: var(--shadow-medium);
+    .fm-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    .fm-table thead th {
+      text-align: left;
+      padding: 10px 12px;
+      background: var(--fm-toolbar-bg);
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .fm-table thead th.fm-col-sortable {
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.15s;
+    }
+    .fm-table thead th.fm-col-sortable:hover {
+      color: var(--primary-dark);
+    }
+    .fm-table tbody tr {
+      border-bottom: 1px solid var(--border-color);
+      transition: background 0.12s;
+    }
+    .fm-table tbody tr:hover {
+      background: rgba(33, 150, 243, 0.05);
+    }
+    .fm-table tbody td {
+      padding: 10px 12px;
+      vertical-align: middle;
+    }
+    .fm-col-icon { width: 40px; text-align: center; font-size: 1.15rem; }
+    .fm-col-name { min-width: 0; word-break: break-word; }
+    .fm-col-name-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      font: inherit;
+      color: var(--primary-dark);
+      cursor: pointer;
+      text-align: left;
+      font-weight: 500;
+    }
+    .fm-col-name-btn:hover {
+      text-decoration: underline;
+    }
+    .fm-col-name-txt {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .fm-col-size { width: 88px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+    .fm-col-date { width: 150px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+    .fm-col-actions { width: 1%; white-space: nowrap; }
+    .fm-actions-inner {
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+    .fm-actions-inner .btn {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      box-shadow: none;
     }
     ul.file-ul {
       list-style: none;
@@ -515,35 +573,19 @@
       left: 100%;
     }
     @media (max-width: 600px) {
-      .container { max-width: 100%; padding: 0; border-radius: 0; }
-      .content { padding: 8px; }
-      .section { padding: 6px; margin-bottom: 12px; }
-      .header { padding: 18px 6px 12px 6px; border-radius: 0; }
-      .header h1 { font-size: 1.3em; }
-      .theme-toggle { 
-        top: 10px; 
-        right: 10px; 
-        width: 35px; 
-        height: 35px; 
-        font-size: 1em; 
-      }
-      #breadcrumb { font-size: 0.98em; margin-bottom: 10px; overflow-x: auto; white-space: nowrap; }
-      .file-li { padding: 8px 2px; font-size: 0.98em; }
-      .file-info strong { font-size: 1em; }
-      .file-meta { font-size: 11px; }
-      .btn { padding: 7px 10px; font-size: 0.98em; }
-      .file-actions { 
-        gap: 6px; 
-        opacity: 1;
-        transform: translateX(0);
-      }
-      
-      .btn {
-        padding: 6px 12px;
-        font-size: 0.85em;
-        gap: 4px;
-      }
-      .upload-area { padding: 32px 0; font-size: 1em; }
+      body { padding: 0; }
+      .container { max-width: 100%; border-radius: 0; border-left: none; border-right: none; }
+      .header { padding: 12px 14px; }
+      .header h1 { font-size: 1.05rem; }
+      .fm-toolbar { padding: 10px 12px; }
+      #breadcrumb { font-size: 0.8125rem; overflow-x: auto; white-space: nowrap; max-width: 100%; }
+      .fm-upload-wrap { padding: 10px 12px; }
+      .upload-area { padding: 14px 12px; font-size: 0.85rem; }
+      .fm-table { font-size: 0.8125rem; }
+      .fm-table thead th.fm-col-date,
+      .fm-table tbody td.fm-col-date { display: none; }
+      .fm-col-size { width: 72px; }
+      .btn { padding: 6px 10px; font-size: 0.75rem; }
       
       /* 移动端编辑器优化 */
       .editor-modal {
@@ -590,8 +632,8 @@
       }
     }
     @media (max-width: 400px) {
-      .header h1 { font-size: 1em; }
-      .btn { font-size: 0.92em; }
+      .header h1 { font-size: 1rem; }
+      .fm-col-size { display: none; }
     }
     
     /* 手动暗黑模式支持 */
@@ -606,11 +648,50 @@
       --success-color: #3fb950;
       --error-color: #f85149;
       --warning-color: #d29922;
+      --fm-workspace: #010409;
+      --fm-toolbar-bg: #161b22;
     }
 
     [data-theme="dark"] body { 
-      background: var(--bg-primary); 
+      background: var(--fm-workspace); 
       color: var(--text-primary);
+    }
+    [data-theme="dark"] .header {
+      background: var(--bg-primary);
+      border-bottom-color: var(--border-color);
+    }
+    [data-theme="dark"] .header h1 {
+      color: var(--text-primary);
+    }
+    [data-theme="dark"] .header p {
+      color: var(--text-secondary);
+    }
+    [data-theme="dark"] .theme-toggle {
+      background: var(--bg-secondary);
+      border-color: var(--border-color);
+    }
+    [data-theme="dark"] .fm-tool-btn {
+      background: var(--bg-tertiary);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+    [data-theme="dark"] .fm-tool-btn:hover {
+      border-color: var(--text-accent);
+      color: var(--text-accent);
+    }
+    [data-theme="dark"] .fm-table thead th {
+      background: var(--fm-toolbar-bg);
+      border-bottom-color: var(--border-color);
+      color: var(--text-secondary);
+    }
+    [data-theme="dark"] .fm-table tbody tr {
+      border-bottom-color: var(--border-color);
+    }
+    [data-theme="dark"] .fm-table tbody tr:hover {
+      background: rgba(88, 166, 255, 0.06);
+    }
+    [data-theme="dark"] .fm-col-name-btn {
+      color: var(--text-accent);
     }
     [data-theme="dark"] .container { 
       background: var(--bg-secondary); 
@@ -641,13 +722,10 @@
     [data-theme="dark"] .file-icon {
       color: var(--text-accent);
     }
-    [data-theme="dark"] #breadcrumb {
+    [data-theme="dark"] #breadcrumb span.fm-crumb {
       color: var(--text-accent);
     }
-    [data-theme="dark"] #breadcrumb span {
-      color: var(--text-accent);
-    }
-    [data-theme="dark"] #breadcrumb span.active {
+    [data-theme="dark"] #breadcrumb span.fm-crumb-active {
       color: var(--text-primary);
     }
     [data-theme="dark"] #breadcrumb .sep {
@@ -815,13 +893,10 @@
       .file-icon {
         color: #58a6ff;
       }
-      #breadcrumb {
+      #breadcrumb span.fm-crumb {
         color: #58a6ff;
       }
-      #breadcrumb span {
-        color: #58a6ff;
-      }
-      #breadcrumb span.active {
+      #breadcrumb span.fm-crumb-active {
         color: #e6edf3;
       }
       #breadcrumb .sep {
@@ -1172,30 +1247,37 @@
 
 <body>
   <div class="container">
-    <div class="header">
-      <button class="theme-toggle" id="themeToggle" title="切换主题">🌙</button>
-      <h1>📁 LAN 文件传输</h1>
-      <p>在局域网内轻松共享和管理文件</p>
-    </div>
+    <header class="header">
+      <div class="header-brand">
+        <span class="header-brand-icon" aria-hidden="true">📂</span>
+        <div>
+          <h1>LAN 共享</h1>
+          <p>局域网文件管理 · 上传、下载与浏览</p>
+        </div>
+      </div>
+      <button type="button" class="theme-toggle" id="themeToggle" title="切换主题">🌙</button>
+    </header>
 
     <div class="content">
-      <div id="breadcrumb" style="margin-bottom: 10px;"></div>
-      <div class="section">
-        <h2>📤 上传文件</h2>
-        <div class="upload-area" id="uploadArea" role="button" tabindex="0" aria-label="文件上传区域，点击或拖拽文件到此上传">
-          <div>📁 点击或拖拽文件到此处上传</div>
+      <div class="fm-toolbar">
+        <nav id="breadcrumb" aria-label="当前路径"></nav>
+        <div class="fm-toolbar-right">
+          <span id="fileCountLabel" class="fm-count"></span>
+          <button type="button" class="fm-tool-btn" onclick="loadFiles()">刷新</button>
+        </div>
+      </div>
+
+      <div class="fm-upload-wrap">
+        <div class="upload-area" id="uploadArea" role="button" tabindex="0" aria-label="上传区域，点击或拖拽文件">
+          <div>点击或拖拽文件到此处上传（当前目录）</div>
           <input type="file" id="fileInput" multiple webkitdirectory directory style="display: none;" aria-label="选择文件上传" />
         </div>
         <div id="uploadStatus" class="status"></div>
         <progress id="uploadProgress" value="0" max="100" style="width: 100%; display: none; margin-top: 10px;"></progress>
       </div>
 
-      <div class="section">
-        <h2>📋 文件列表</h2>
-        <button onclick="loadFiles()" style="margin-bottom: 10px;">🔄 刷新文件列表</button>
-        <div class="file-list" id="fileList">
-          <div style="text-align: center; padding: 20px; color: #666;">暂无文件</div>
-        </div>
+      <div class="file-list" id="fileList" role="region" aria-label="文件列表">
+        <div class="fm-empty">加载中…</div>
       </div>
     </div>
   </div>
@@ -1206,6 +1288,10 @@
     const uploadStatus = document.getElementById('uploadStatus');
     const uploadProgress = document.getElementById('uploadProgress');
     const fileList = document.getElementById('fileList');
+    const fileCountLabel = document.getElementById('fileCountLabel');
+
+    let fmSort = { key: 'modified', dir: 'desc' };
+    let lastFilesList = [];
 
     uploadArea.onclick = () => fileInput.click();
     uploadArea.onkeydown = (e) => {
@@ -1232,14 +1318,36 @@
 
     function updateBreadcrumb() {
       const nav = document.getElementById('breadcrumb');
+      nav.textContent = '';
+      const root = document.createElement('span');
+      root.className = 'fm-crumb';
+      root.textContent = '根目录';
+      root.addEventListener('click', () => gotoDir(''));
+      nav.appendChild(root);
+
       const segs = currentDir.split('/').filter(Boolean);
-      let html = '<span style="cursor:pointer;color:#2196F3;" onclick="gotoDir(\'\')">根目录</span>';
       let path = '';
       for (let i = 0; i < segs.length; i++) {
         path += (i === 0 ? '' : '/') + segs[i];
-        html += '<span class="sep">›</span><span style="cursor:pointer;color:#2196F3;" onclick="gotoDir(\'' + path + '/\')">' + segs[i] + '</span>';
+        const sep = document.createElement('span');
+        sep.className = 'sep';
+        sep.textContent = '/';
+        nav.appendChild(sep);
+        const isLast = i === segs.length - 1;
+        if (isLast) {
+          const cur = document.createElement('span');
+          cur.className = 'fm-crumb fm-crumb-active';
+          cur.textContent = segs[i];
+          nav.appendChild(cur);
+        } else {
+          const mid = document.createElement('span');
+          mid.className = 'fm-crumb';
+          mid.textContent = segs[i];
+          const targetDir = path + '/';
+          mid.addEventListener('click', () => gotoDir(targetDir));
+          nav.appendChild(mid);
+        }
       }
-      nav.innerHTML = html;
     }
 
     function gotoDir(dir) {
@@ -1305,13 +1413,242 @@
     async function loadFiles() {
       try {
         const response = await fetch('/files?dir=' + encodeURIComponent(currentDir));
-        const data = await response.json();
-        fileList.innerHTML = '';
-        renderFileTree(data.files || [], currentDir, fileList);
+        const text = await response.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (parseErr) {
+          console.error('files response parse:', parseErr, text.slice(0, 200));
+          showStatus('服务器返回非 JSON，可能接口出错。请重试或查看控制台。', 'error');
+          hideStatus(5000);
+          return;
+        }
+        if (!response.ok) {
+          const msg = data && data.error ? data.error : text.slice(0, 120);
+          showStatus('加载失败 (' + response.status + '): ' + msg, 'error');
+          hideStatus(5000);
+          lastFilesList = [];
+          renderFileTable(lastFilesList, fileList);
+          return;
+        }
+        lastFilesList = data.files || [];
+        renderFileTable(lastFilesList, fileList);
       } catch (error) {
-        showStatus('加载文件列表失败', 'error');
-        hideStatus(3000);
+        console.error('loadFiles', error);
+        showStatus('加载文件列表失败: ' + (error.message || String(error)), 'error');
+        hideStatus(5000);
       }
+    }
+
+    function fmSortIndicator(key) {
+      if (fmSort.key !== key) return '';
+      return fmSort.dir === 'asc' ? ' ↑' : ' ↓';
+    }
+
+    function sortEntries(files) {
+      const folders = files.filter(f => f.type === 'folder');
+      const fls = files.filter(f => f.type !== 'folder');
+      const mult = fmSort.dir === 'asc' ? 1 : -1;
+      const cmp = (a, b) => {
+        if (fmSort.key === 'name') {
+          return mult * String(a.name).localeCompare(String(b.name), 'zh-CN');
+        }
+        if (fmSort.key === 'size') {
+          return mult * ((Number(a.size) || 0) - (Number(b.size) || 0));
+        }
+        const ta = new Date(a.modified || 0).getTime();
+        const tb = new Date(b.modified || 0).getTime();
+        return mult * (ta - tb);
+      };
+      folders.sort(cmp);
+      fls.sort(cmp);
+      return folders.concat(fls);
+    }
+
+    window.setFmSort = function(key) {
+      if (fmSort.key === key) {
+        fmSort.dir = fmSort.dir === 'asc' ? 'desc' : 'asc';
+      } else {
+        fmSort.key = key;
+        fmSort.dir = key === 'name' ? 'asc' : 'desc';
+      }
+      renderFileTable(lastFilesList, fileList);
+    };
+
+    function renderFileTable(files, container) {
+      if (fileCountLabel) {
+        fileCountLabel.textContent = (files && files.length) ? `${files.length} 项` : '0 项';
+      }
+      container.textContent = '';
+      if (!files || files.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'fm-empty';
+        empty.textContent = '此文件夹为空';
+        container.appendChild(empty);
+        return;
+      }
+
+      const table = document.createElement('table');
+      table.className = 'fm-table';
+      const thead = document.createElement('thead');
+      const hr = document.createElement('tr');
+      const hIcon = document.createElement('th');
+      hIcon.className = 'fm-col-icon';
+      hIcon.textContent = '';
+      const hName = document.createElement('th');
+      hName.className = 'fm-col-name fm-col-sortable';
+      hName.textContent = '名称' + fmSortIndicator('name');
+      hName.title = '按名称排序';
+      hName.addEventListener('click', () => window.setFmSort('name'));
+      const hSize = document.createElement('th');
+      hSize.className = 'fm-col-size fm-col-sortable';
+      hSize.textContent = '大小' + fmSortIndicator('size');
+      hSize.title = '按大小排序';
+      hSize.addEventListener('click', () => window.setFmSort('size'));
+      const hDate = document.createElement('th');
+      hDate.className = 'fm-col-date fm-col-sortable';
+      hDate.textContent = '修改时间' + fmSortIndicator('modified');
+      hDate.title = '按修改时间排序';
+      hDate.addEventListener('click', () => window.setFmSort('modified'));
+      const hAct = document.createElement('th');
+      hAct.className = 'fm-col-actions';
+      hAct.textContent = '操作';
+      hr.appendChild(hIcon);
+      hr.appendChild(hName);
+      hr.appendChild(hSize);
+      hr.appendChild(hDate);
+      hr.appendChild(hAct);
+      thead.appendChild(hr);
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      const sorted = sortEntries(files.slice());
+
+      for (const file of sorted) {
+        const tr = document.createElement('tr');
+        const tdIcon = document.createElement('td');
+        tdIcon.className = 'fm-col-icon';
+
+        if (file.type === 'folder') {
+          tdIcon.textContent = '📁';
+          const tdName = document.createElement('td');
+          tdName.className = 'fm-col-name';
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'fm-col-name-btn';
+          btn.textContent = file.name;
+          btn.addEventListener('click', () => gotoDir(currentDir + file.name + '/'));
+          tdName.appendChild(btn);
+
+          const tdSize = document.createElement('td');
+          tdSize.className = 'fm-col-size';
+          tdSize.textContent = '—';
+
+          const tdDate = document.createElement('td');
+          tdDate.className = 'fm-col-date';
+          dateLabel(tdDate, file.modified);
+
+          const tdAct = document.createElement('td');
+          tdAct.className = 'fm-col-actions';
+          tdAct.appendChild(actionGroupFolder(file.name));
+
+          tr.appendChild(tdIcon);
+          tr.appendChild(tdName);
+          tr.appendChild(tdSize);
+          tr.appendChild(tdDate);
+          tr.appendChild(tdAct);
+        } else {
+          const type = getFileType(file.name);
+          const icons = { image: '🖼️', text: '📄', pdf: '📕', audio: '🎵', video: '🎬', other: '📦' };
+          tdIcon.textContent = icons[type] || icons.other;
+          const filePath = currentDir + file.name;
+
+          const tdName = document.createElement('td');
+          tdName.className = 'fm-col-name';
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'fm-col-name-btn';
+          btn.textContent = file.name;
+          btn.addEventListener('click', () => previewFile(filePath, file.name));
+          tdName.appendChild(btn);
+
+          const tdSize = document.createElement('td');
+          tdSize.className = 'fm-col-size';
+          tdSize.textContent = file.sizeFormatted || '—';
+
+          const tdDate = document.createElement('td');
+          tdDate.className = 'fm-col-date';
+          dateLabel(tdDate, file.modified);
+
+          const tdAct = document.createElement('td');
+          tdAct.className = 'fm-col-actions';
+          tdAct.appendChild(actionGroupFile(file.name, filePath));
+
+          tr.appendChild(tdIcon);
+          tr.appendChild(tdName);
+          tr.appendChild(tdSize);
+          tr.appendChild(tdDate);
+          tr.appendChild(tdAct);
+        }
+        tbody.appendChild(tr);
+      }
+      table.appendChild(tbody);
+      container.appendChild(table);
+    }
+
+    function dateLabel(td, modified) {
+      if (!modified) {
+        td.textContent = '—';
+        return;
+      }
+      try {
+        td.textContent = new Date(modified).toLocaleString();
+      } catch (e) {
+        td.textContent = '—';
+      }
+    }
+
+    function actionGroupFolder(name) {
+      const wrap = document.createElement('div');
+      wrap.className = 'fm-actions-inner';
+      const rel = currentDir + name;
+      const dl = document.createElement('a');
+      dl.href = '/download?file=' + encodeURIComponent(rel);
+      dl.className = 'btn btn-success';
+      dl.textContent = 'ZIP';
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'btn btn-danger';
+      del.textContent = '删除';
+      del.addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteFile(rel);
+      });
+      wrap.appendChild(dl);
+      wrap.appendChild(del);
+      return wrap;
+    }
+
+    function actionGroupFile(fileName, filePath) {
+      const wrap = document.createElement('div');
+      wrap.className = 'fm-actions-inner';
+      const safeDownloadName = fileName.replace(/[^-\u007F\u4e00-\u9fa5.-]/g, '_');
+      const dl = document.createElement('a');
+      dl.href = '/download?file=' + encodeURIComponent(filePath);
+      dl.className = 'btn btn-success';
+      dl.setAttribute('download', safeDownloadName);
+      dl.textContent = '下载';
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'btn btn-danger';
+      del.textContent = '删除';
+      del.addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteFile(filePath);
+      });
+      wrap.appendChild(dl);
+      wrap.appendChild(del);
+      return wrap;
     }
 
     // 预览弹窗
@@ -1481,50 +1818,6 @@
     }
     window.saveTextFile = saveTextFile;
 
-    // 递归渲染文件树（只显示当前目录内容）
-    function renderFileTree(files, parentPath, container) {
-      if (!files || files.length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">暂无文件</div>';
-        return;
-      }
-      const ul = document.createElement('ul');
-      ul.className = 'file-ul';
-      files.forEach(file => {
-        const li = document.createElement('li');
-        li.className = 'file-li';
-        if (file.type === 'folder') {
-          li.innerHTML = `
-            <span class="file-icon" onclick="gotoDir('${(currentDir + file.name + '/').replace(/'/g, "\\'")}')">📁</span>
-            <div class="file-info" onclick="gotoDir('${(currentDir + file.name + '/').replace(/'/g, "\\'")}')"><strong>${file.name}</strong></div>
-            <div class="file-actions">
-              <button class="btn btn-success" onclick="event.stopPropagation();location.href='/download?file=${encodeURIComponent(currentDir + file.name)}'"><span>📦</span>下载zip</button>
-              <button class="btn btn-danger" onclick="event.stopPropagation();deleteFile('${(currentDir + file.name).replace(/'/g, "\\'")}')"><span>🗑️</span>删除</button>
-            </div>
-          `;
-        } else {
-          const filePath = currentDir + file.name;
-          const safeDownloadName = file.name.replace(/[^-\u007F\u4e00-\u9fa5.-]/g, '_');
-          const type = getFileType(file.name);
-          let icon = '📦';
-          if (type === 'image') icon = '🖼️';
-          else if (type === 'text') icon = '📄';
-          else if (type === 'pdf') icon = '📕';
-          else if (type === 'audio') icon = '🎵';
-          else if (type === 'video') icon = '🎬';
-          li.innerHTML = `
-            <span class="file-icon">${icon}</span>
-            <div class="file-info"><strong style="cursor:pointer;color:#1976d2;" onclick="previewFile('${filePath.replace(/'/g, "\\'")}', '${file.name.replace(/'/g, "\\'")}')">${file.name}</strong><div class="file-meta">${file.sizeFormatted} • ${new Date(file.modified).toLocaleString()}</div></div>
-            <div class="file-actions">
-              <a href="/download?file=${encodeURIComponent(filePath)}" class="btn btn-success" download="${safeDownloadName}"><span>📥</span>下载</a>
-              <button class="btn btn-danger" onclick="deleteFile('${filePath.replace(/'/g, "\\'")}')"><span>🗑️</span>删除</button>
-            </div>
-          `;
-        }
-        ul.appendChild(li);
-      });
-      container.appendChild(ul);
-    }
-
     async function deleteFile(name) {
       if (!confirm(`确定要删除 "${name}" 吗？（文件夹将递归删除）`)) return;
       try {
@@ -1607,37 +1900,6 @@
       updateTheme();
     }
 
-    // 性能优化：防抖函数
-    function debounce(func, wait) {
-      let timeout;
-      return function executedFunction(...args) {
-        const later = () => {
-          clearTimeout(timeout);
-          func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-      };
-    }
-
-    // 性能优化：节流函数
-    function throttle(func, limit) {
-      let inThrottle;
-      return function() {
-        const args = arguments;
-        const context = this;
-        if (!inThrottle) {
-          func.apply(context, args);
-          inThrottle = true;
-          setTimeout(() => inThrottle = false, limit);
-        }
-      };
-    }
-
-    // 优化文件加载
-    const optimizedLoadFiles = debounce(loadFiles, 300);
-
-    // 页面加载时初始化
     window.gotoDir = gotoDir;
     window.onload = () => {
       initThemeToggle();
@@ -1670,7 +1932,7 @@
     
     // 触摸设备优化
     if (isMobile()) {
-      uploadArea.innerHTML = '<div class="icon">📁</div><div>点击选择文件/文件夹上传</div>';
+      uploadArea.innerHTML = '<div>点击选择文件上传</div>';
       uploadArea.ondragover = null;
       uploadArea.ondrop = null;
       
@@ -1682,7 +1944,7 @@
         uploadArea.style.transform = 'scale(1)';
       });
     } else {
-      uploadArea.innerHTML = '<div class="icon">📁</div><div>点击或拖拽文件/文件夹到此处上传</div>';
+      uploadArea.innerHTML = '<div>点击或拖拽文件/文件夹到此处上传</div>';
     }
     
     // 添加触摸手势支持

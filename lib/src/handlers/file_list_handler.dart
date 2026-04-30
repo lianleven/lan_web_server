@@ -7,8 +7,15 @@ import '../utils/file_utils.dart';
 
 Future<void> handleFileList(HttpRequest request, String sharedDir) async {
   try {
-    final dirParam = request.uri.queryParameters['dir'] ?? '';
-    final dir = Directory(path.join(sharedDir, dirParam));
+    var dirParam = request.uri.queryParameters['dir'] ?? '';
+    dirParam = dirParam.replaceAll('\\', '/');
+    final segments =
+        dirParam.split('/').where((String s) => s.isNotEmpty).toList();
+    if (segments.any((s) => s == '..')) {
+      await sendJsonResponse(request, {'files': [], 'error': 'invalid path'});
+      return;
+    }
+    final dir = Directory(path.normalize(path.join(sharedDir, dirParam)));
     // 仅列出一层（与网页 /files?dir= 及 App 列表一致）；避免整棵子树递归带来的巨量 JSON 与磁盘遍历。
     final files = await _getFileListShallow(dir);
     await sendJsonResponse(request, {'files': files});
@@ -44,25 +51,30 @@ Future<List<Map<String, dynamic>>> _getFileListShallow(Directory dir) async {
     entities.add(entity);
   }
   final entries = await Future.wait(entities.map((entity) async {
-    final stat = await entity.stat();
-    final name = path.basename(entity.path);
-    if (entity is File) {
-      return {
-        'name': name,
-        'type': 'file',
-        'size': stat.size,
-        'modified': stat.modified.toIso8601String(),
-        'sizeFormatted': formatBytes(stat.size),
-      };
+    try {
+      final stat = await entity.stat();
+      final name = path.basename(entity.path);
+      if (entity is File) {
+        return {
+          'name': name,
+          'type': 'file',
+          'size': stat.size,
+          'modified': stat.modified.toIso8601String(),
+          'sizeFormatted': formatBytes(stat.size),
+        };
+      }
+      if (entity is Directory) {
+        return {
+          'name': name,
+          'type': 'folder',
+          'modified': stat.modified.toIso8601String(),
+        };
+      }
+      return null;
+    } catch (_) {
+      // 无权访问、断链符号链接等：跳过该条目，避免整表 500
+      return null;
     }
-    if (entity is Directory) {
-      return {
-        'name': name,
-        'type': 'folder',
-        'modified': stat.modified.toIso8601String(),
-      };
-    }
-    return null;
   }));
 
   final list = entries.whereType<Map<String, dynamic>>().toList();
