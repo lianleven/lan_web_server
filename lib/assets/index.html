@@ -134,6 +134,25 @@
       gap: 10px;
       flex-shrink: 0;
     }
+    .fm-view-toggle {
+      display: inline-flex;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .fm-view-toggle .fm-view-btn {
+      border: none;
+      border-radius: 0;
+      margin: 0;
+    }
+    .fm-view-toggle .fm-view-btn:first-child {
+      border-right: 1px solid var(--border-color);
+    }
+    .fm-tool-btn.active {
+      background: rgba(33, 150, 243, 0.15);
+      color: var(--primary-dark);
+      font-weight: 600;
+    }
     .fm-count {
       font-size: 0.8125rem;
       color: var(--text-secondary);
@@ -333,6 +352,202 @@
       padding: 6px 12px;
       font-size: 0.8rem;
       box-shadow: none;
+    }
+
+    .fm-grid-sort-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--fm-toolbar-bg);
+    }
+    .fm-grid-sort-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-right: 4px;
+    }
+    .fm-grid-sort-btn {
+      font-size: 0.75rem;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+    .fm-grid-sort-btn:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-dark);
+    }
+    .fm-grid-sort-btn.active {
+      border-color: var(--primary-color);
+      background: rgba(33, 150, 243, 0.1);
+      font-weight: 600;
+    }
+
+    .fm-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+      gap: 12px;
+      padding: 16px;
+    }
+    .fm-grid-item {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px;
+      background: var(--bg-primary);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: box-shadow 0.15s, border-color 0.15s;
+      overflow: visible;
+      position: relative;
+      z-index: 1;
+    }
+    .fm-grid-item:has(.fm-grid-dropdown:not([hidden])) {
+      z-index: 25;
+    }
+    .fm-grid-item:hover {
+      border-color: var(--primary-color);
+      box-shadow: var(--shadow-light);
+    }
+    .fm-grid-thumb-wrap {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .fm-grid-thumb-wrap.fm-grid-thumb-wrap--folder,
+    .fm-grid-thumb-wrap.fm-grid-thumb-wrap--preview {
+      cursor: pointer;
+    }
+    .fm-grid-thumb-wrap.fm-grid-thumb-wrap--folder:hover,
+    .fm-grid-thumb-wrap.fm-grid-thumb-wrap--preview:hover {
+      background: rgba(33, 150, 243, 0.08);
+    }
+    .fm-grid-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .fm-grid-thumb.fm-grid-thumb-icon {
+      object-fit: none;
+      font-size: 2.5rem;
+      line-height: 1;
+      align-items: center;
+      justify-content: center;
+      display: flex;
+    }
+    .fm-grid-name {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--primary-dark);
+      cursor: pointer;
+      text-align: center;
+      word-break: break-word;
+      line-height: 1.35;
+    }
+    .fm-grid-name:hover {
+      text-decoration: underline;
+    }
+    .fm-grid-meta {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 1.3;
+      min-height: 2.2em;
+    }
+    .fm-grid-menu-wrap {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: auto;
+      z-index: 8;
+    }
+    .fm-grid-more-btn {
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      font-size: 1.05rem;
+      line-height: 1;
+      letter-spacing: -0.06em;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .fm-grid-more-btn:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-dark);
+      background: var(--bg-primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+    .fm-grid-more-btn[aria-expanded="true"] {
+      border-color: var(--primary-color);
+      color: var(--primary-dark);
+      background: var(--bg-primary);
+    }
+    .fm-grid-dropdown {
+      position: absolute;
+      right: 0;
+      left: auto;
+      top: 100%;
+      bottom: auto;
+      margin-top: 6px;
+      margin-bottom: 0;
+      min-width: 138px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      box-shadow: var(--shadow-medium);
+      z-index: 30;
+      padding: 6px 0;
+    }
+    .fm-grid-menu-item {
+      display: block;
+      width: 100%;
+      padding: 9px 14px;
+      border: none;
+      background: none;
+      text-align: left;
+      font-size: 0.8125rem;
+      cursor: pointer;
+      color: var(--text-primary);
+      text-decoration: none;
+      box-sizing: border-box;
+      transition: background 0.12s;
+    }
+    .fm-grid-menu-item:hover {
+      background: rgba(33, 150, 243, 0.08);
+    }
+    a.fm-grid-menu-item {
+      color: var(--primary-dark);
+      font-weight: 500;
+    }
+    .fm-grid-menu-item.fm-grid-menu-danger {
+      color: var(--error-color);
+    }
+    .fm-grid-menu-item.fm-grid-menu-danger:hover {
+      background: rgba(244, 67, 54, 0.08);
     }
     ul.file-ul {
       list-style: none;
@@ -582,8 +797,17 @@
       .fm-upload-wrap { padding: 10px 12px; }
       .upload-area { padding: 14px 12px; font-size: 0.85rem; }
       .fm-table { font-size: 0.8125rem; }
-      .fm-table thead th.fm-col-date,
-      .fm-table tbody td.fm-col-date { display: none; }
+      .fm-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 8px;
+        padding: 12px;
+      }
+      .fm-grid-item {
+        padding: 8px;
+      }
+      .fm-grid-thumb.fm-grid-thumb-icon {
+        font-size: 2rem;
+      }
       .fm-col-size { width: 72px; }
       .btn { padding: 6px 10px; font-size: 0.75rem; }
       
@@ -691,6 +915,56 @@
       background: rgba(88, 166, 255, 0.06);
     }
     [data-theme="dark"] .fm-col-name-btn {
+      color: var(--text-accent);
+    }
+    [data-theme="dark"] .fm-grid-item {
+      background: var(--bg-secondary);
+      border-color: var(--border-color);
+    }
+    [data-theme="dark"] .fm-grid-item:hover {
+      border-color: var(--text-accent);
+    }
+    [data-theme="dark"] .fm-grid-thumb-wrap {
+      background: var(--bg-primary);
+    }
+    [data-theme="dark"] .fm-grid-thumb-wrap.fm-grid-thumb-wrap--folder:hover,
+    [data-theme="dark"] .fm-grid-thumb-wrap.fm-grid-thumb-wrap--preview:hover {
+      background: rgba(88, 166, 255, 0.1);
+    }
+    [data-theme="dark"] .fm-grid-name {
+      color: var(--text-accent);
+    }
+    [data-theme="dark"] .fm-grid-sort-bar {
+      background: var(--fm-toolbar-bg);
+      border-bottom-color: var(--border-color);
+    }
+    [data-theme="dark"] .fm-grid-sort-btn {
+      background: var(--bg-tertiary);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+    [data-theme="dark"] .fm-grid-more-btn {
+      background: rgba(22, 27, 34, 0.9);
+      border-color: var(--border-color);
+      color: var(--text-secondary);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+    }
+    [data-theme="dark"] .fm-grid-dropdown {
+      background: var(--bg-secondary);
+      border-color: var(--border-color);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    [data-theme="dark"] .fm-grid-menu-item:hover {
+      background: rgba(88, 166, 255, 0.1);
+    }
+    [data-theme="dark"] a.fm-grid-menu-item {
+      color: var(--text-accent);
+    }
+    [data-theme="dark"] .fm-grid-menu-item.fm-grid-menu-danger {
+      color: var(--error-color);
+    }
+    [data-theme="dark"] .fm-tool-btn.active {
+      background: rgba(88, 166, 255, 0.15);
       color: var(--text-accent);
     }
     [data-theme="dark"] .container { 
@@ -1262,6 +1536,10 @@
       <div class="fm-toolbar">
         <nav id="breadcrumb" aria-label="当前路径"></nav>
         <div class="fm-toolbar-right">
+          <div class="fm-view-toggle" role="group" aria-label="视图模式">
+            <button type="button" class="fm-tool-btn fm-view-btn" id="fmViewList" title="列表视图" aria-pressed="true">列表</button>
+            <button type="button" class="fm-tool-btn fm-view-btn" id="fmViewGrid" title="网格视图" aria-pressed="false">网格</button>
+          </div>
           <span id="fileCountLabel" class="fm-count"></span>
           <button type="button" class="fm-tool-btn" onclick="loadFiles()">刷新</button>
         </div>
@@ -1290,8 +1568,30 @@
     const fileList = document.getElementById('fileList');
     const fileCountLabel = document.getElementById('fileCountLabel');
 
+    const FM_VIEW_STORAGE_KEY = 'lan_fm_view_mode';
+    let fmViewMode = (localStorage.getItem(FM_VIEW_STORAGE_KEY) === 'grid') ? 'grid' : 'list';
     let fmSort = { key: 'modified', dir: 'desc' };
     let lastFilesList = [];
+
+    function syncFmViewToggle() {
+      const listBtn = document.getElementById('fmViewList');
+      const gridBtn = document.getElementById('fmViewGrid');
+      if (!listBtn || !gridBtn) return;
+      const isList = fmViewMode === 'list';
+      listBtn.classList.toggle('active', isList);
+      listBtn.setAttribute('aria-pressed', isList ? 'true' : 'false');
+      gridBtn.classList.toggle('active', !isList);
+      gridBtn.setAttribute('aria-pressed', (!isList) ? 'true' : 'false');
+    }
+
+    window.setFmViewMode = function(mode) {
+      const next = mode === 'grid' ? 'grid' : 'list';
+      if (fmViewMode === next) return;
+      fmViewMode = next;
+      localStorage.setItem(FM_VIEW_STORAGE_KEY, next);
+      syncFmViewToggle();
+      renderFileTable(lastFilesList, fileList);
+    };
 
     uploadArea.onclick = () => fileInput.click();
     uploadArea.onkeydown = (e) => {
@@ -1465,6 +1765,95 @@
       return folders.concat(fls);
     }
 
+    function closeAllGridMenus() {
+      document.querySelectorAll('.fm-grid-dropdown').forEach((menu) => {
+        if (!menu.hidden) {
+          menu.hidden = true;
+          const wrap = menu.parentElement;
+          const btn = wrap && wrap.querySelector('.fm-grid-more-btn');
+          if (btn) btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    document.addEventListener('click', closeAllGridMenus);
+
+    function createGridActionsMenu(isFolder, fileName, filePath) {
+      const wrap = document.createElement('div');
+      wrap.className = 'fm-grid-menu-wrap';
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'fm-grid-more-btn';
+      btn.title = '更多操作';
+      btn.setAttribute('aria-expanded', 'false');
+      btn.setAttribute('aria-haspopup', 'true');
+      btn.textContent = '⋯';
+
+      const menu = document.createElement('div');
+      menu.className = 'fm-grid-dropdown';
+      menu.hidden = true;
+      menu.setAttribute('role', 'menu');
+      menu.addEventListener('click', (e) => e.stopPropagation());
+
+      if (isFolder) {
+        const rel = currentDir + fileName;
+        const a = document.createElement('a');
+        a.href = '/download?file=' + encodeURIComponent(rel);
+        a.className = 'fm-grid-menu-item';
+        a.textContent = '打包下载 ZIP';
+        a.setAttribute('role', 'menuitem');
+        a.addEventListener('click', () => closeAllGridMenus());
+        menu.appendChild(a);
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'fm-grid-menu-item fm-grid-menu-danger';
+        del.textContent = '删除';
+        del.setAttribute('role', 'menuitem');
+        del.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closeAllGridMenus();
+          deleteFile(rel);
+        });
+        menu.appendChild(del);
+      } else {
+        const safeDownloadName = fileName.replace(/[^-\u007F\u4e00-\u9fa5.-]/g, '_');
+        const a = document.createElement('a');
+        a.href = '/download?file=' + encodeURIComponent(filePath);
+        a.className = 'fm-grid-menu-item';
+        a.setAttribute('download', safeDownloadName);
+        a.textContent = '下载';
+        a.setAttribute('role', 'menuitem');
+        a.addEventListener('click', () => closeAllGridMenus());
+        menu.appendChild(a);
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'fm-grid-menu-item fm-grid-menu-danger';
+        del.textContent = '删除';
+        del.setAttribute('role', 'menuitem');
+        del.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closeAllGridMenus();
+          deleteFile(filePath);
+        });
+        menu.appendChild(del);
+      }
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const willOpen = menu.hidden;
+        closeAllGridMenus();
+        if (willOpen) {
+          menu.hidden = false;
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      });
+
+      wrap.appendChild(btn);
+      wrap.appendChild(menu);
+      return wrap;
+    }
+
     window.setFmSort = function(key) {
       if (fmSort.key === key) {
         fmSort.dir = fmSort.dir === 'asc' ? 'desc' : 'asc';
@@ -1475,16 +1864,116 @@
       renderFileTable(lastFilesList, fileList);
     };
 
+    function renderFileGridView(files, container) {
+      const bar = document.createElement('div');
+      bar.className = 'fm-grid-sort-bar';
+      const sortLabel = document.createElement('span');
+      sortLabel.className = 'fm-grid-sort-label';
+      sortLabel.textContent = '排序';
+      bar.appendChild(sortLabel);
+      [['name', '名称'], ['size', '大小'], ['modified', '时间']].forEach(([key, label]) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'fm-grid-sort-btn' + (fmSort.key === key ? ' active' : '');
+        b.textContent = label + fmSortIndicator(key);
+        b.addEventListener('click', () => window.setFmSort(key));
+        bar.appendChild(b);
+      });
+      container.appendChild(bar);
+
+      const grid = document.createElement('div');
+      grid.className = 'fm-grid';
+      const sorted = sortEntries(files.slice());
+      const iconForType = (t) => ({ image: '🖼️', text: '📄', pdf: '📕', audio: '🎵', video: '🎬', other: '📦' })[t] || '📦';
+
+      for (const file of sorted) {
+        const card = document.createElement('div');
+        card.className = 'fm-grid-item';
+
+        const thumbWrap = document.createElement('div');
+        thumbWrap.className = 'fm-grid-thumb-wrap';
+
+        if (file.type === 'folder') {
+          thumbWrap.classList.add('fm-grid-thumb-wrap--folder');
+          thumbWrap.title = '进入文件夹';
+          thumbWrap.addEventListener('click', () => gotoDir(currentDir + file.name + '/'));
+          const icon = document.createElement('div');
+          icon.className = 'fm-grid-thumb fm-grid-thumb-icon';
+          icon.textContent = '📁';
+          thumbWrap.appendChild(icon);
+        } else {
+          const filePath = currentDir + file.name;
+          const ftype = getFileType(file.name);
+          thumbWrap.classList.add('fm-grid-thumb-wrap--preview');
+          thumbWrap.title = '预览';
+          thumbWrap.addEventListener('click', () => previewFile(filePath, file.name));
+          if (ftype === 'image') {
+            const img = document.createElement('img');
+            img.className = 'fm-grid-thumb';
+            img.alt = '';
+            img.loading = 'lazy';
+            img.src = '/download?file=' + encodeURIComponent(filePath);
+            img.addEventListener('error', function onImgErr() {
+              thumbWrap.textContent = '';
+              const fallback = document.createElement('div');
+              fallback.className = 'fm-grid-thumb fm-grid-thumb-icon';
+              fallback.textContent = '🖼️';
+              thumbWrap.appendChild(fallback);
+            }, { once: true });
+            thumbWrap.appendChild(img);
+          } else {
+            const icon = document.createElement('div');
+            icon.className = 'fm-grid-thumb fm-grid-thumb-icon';
+            icon.textContent = iconForType(ftype);
+            thumbWrap.appendChild(icon);
+          }
+        }
+        card.appendChild(thumbWrap);
+
+        card.appendChild(createGridActionsMenu(file.type === 'folder', file.name, currentDir + file.name));
+
+        const nameBtn = document.createElement('button');
+        nameBtn.type = 'button';
+        nameBtn.className = 'fm-grid-name';
+        nameBtn.textContent = file.name;
+        if (file.type === 'folder') {
+          nameBtn.addEventListener('click', () => gotoDir(currentDir + file.name + '/'));
+        } else {
+          const fp = currentDir + file.name;
+          nameBtn.addEventListener('click', () => previewFile(fp, file.name));
+        }
+        card.appendChild(nameBtn);
+
+        const meta = document.createElement('div');
+        meta.className = 'fm-grid-meta';
+        if (file.type === 'folder') {
+          meta.textContent = '文件夹';
+        } else {
+          const dt = file.modified ? new Date(file.modified).toLocaleString() : '—';
+          meta.textContent = (file.sizeFormatted || '—') + '\n' + dt;
+        }
+        card.appendChild(meta);
+
+        grid.appendChild(card);
+      }
+      container.appendChild(grid);
+    }
+
     function renderFileTable(files, container) {
       if (fileCountLabel) {
         fileCountLabel.textContent = (files && files.length) ? `${files.length} 项` : '0 项';
       }
+      syncFmViewToggle();
       container.textContent = '';
       if (!files || files.length === 0) {
         const empty = document.createElement('div');
         empty.className = 'fm-empty';
         empty.textContent = '此文件夹为空';
         container.appendChild(empty);
+        return;
+      }
+      if (fmViewMode === 'grid') {
+        renderFileGridView(files, container);
         return;
       }
 
@@ -1904,6 +2393,11 @@
     window.onload = () => {
       initThemeToggle();
       updateBreadcrumb();
+      syncFmViewToggle();
+      const vList = document.getElementById('fmViewList');
+      const vGrid = document.getElementById('fmViewGrid');
+      if (vList) vList.addEventListener('click', () => window.setFmViewMode('list'));
+      if (vGrid) vGrid.addEventListener('click', () => window.setFmViewMode('grid'));
       loadFiles();
       
       // 添加键盘快捷键支持
